@@ -44,6 +44,21 @@ public class DbHelper extends SQLiteOpenHelper {
                 "create table consignment " +
                         "(EmpId text,EmpCode text,Category text,Shift text, Sector text,Weight text,Date text)"
         );
+
+        db.execSQL(
+                "create table company " +
+                        "(CompanyId text PRIMARY KEY,CompanyName text)"
+        );
+
+        db.execSQL(
+                "create table itemCategory " +
+                        "(ItemCategoryId text PRIMARY KEY,CategoryName text)"
+        );
+
+        db.execSQL(
+                "create table itemList " +
+                        "(ItemId text PRIMARY KEY,ItemName text)"
+        );
     }
 
     @Override
@@ -53,6 +68,9 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS sector");
         db.execSQL("DROP TABLE IF EXISTS employee");
         db.execSQL("DROP TABLE IF EXISTS consignment");
+        db.execSQL("DROP TABLE IF EXISTS company");
+        db.execSQL("DROP TABLE IF EXISTS itemCategory");
+        db.execSQL("DROP TABLE IF EXISTS itemList");
         onCreate(db);
     }
 
@@ -116,6 +134,48 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insertCompany(String CompanyId, String CompanyName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("CompanyId", CompanyId);
+        cv.put("CompanyName", CompanyName);
+
+        long result = db.insert("company", null, cv);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean insertItemCategory(String ItemCategoryId, String CategoryName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("ItemCategoryId", ItemCategoryId);
+        cv.put("CategoryName", CategoryName);
+
+        long result = db.insert("itemCategory", null, cv);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean insertItemList(String ItemId, String ItemName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("ItemId", ItemId);
+        cv.put("ItemName", ItemName);
+
+        long result = db.insert("itemList", null, cv);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public boolean insertConsignment(String emp_id, String emp_code, String category, String shift, String sector,
                                      String weight, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -169,6 +229,36 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getSectorData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from sector", null);
+        if (cursor.getCount() > 0) {
+            return cursor;
+        } else {
+            return null;
+        }
+    }
+
+    public Cursor getCompanyList() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from company", null);
+        if (cursor.getCount() > 0) {
+            return cursor;
+        } else {
+            return null;
+        }
+    }
+
+    public Cursor getItemCategory() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from itemCategory", null);
+        if (cursor.getCount() > 0) {
+            return cursor;
+        } else {
+            return null;
+        }
+    }
+
+    public Cursor getItemList() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from itemList", null);
         if (cursor.getCount() > 0) {
             return cursor;
         } else {

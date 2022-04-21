@@ -55,4 +55,22 @@ public class Urls {
     @Method : POST
      */
     public static final String CONSIGNMENT_LIST = BASE_URL + "consignment_list";
+
+    /*
+    @Function : company_list
+    @Method : POST
+     */
+    public static final String COMPANY_LIST = BASE_URL + "company_list";
+
+    /*
+    @Function : item_category_list
+    @Method : POST
+     */
+    public static final String ITEM_CATEGORY_LIST = BASE_URL + "item_category_list";
+
+    /*
+    @Function : item_list
+    @Method : POST
+     */
+    public static final String ITEM_LIST = BASE_URL + "item_list";
 }

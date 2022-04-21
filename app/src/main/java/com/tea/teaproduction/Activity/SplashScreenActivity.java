@@ -24,6 +24,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tea.teaproduction.Helper.DbHelper;
 import com.tea.teaproduction.MainActivity;
+import com.tea.teaproduction.Model.CategoryListModel;
+import com.tea.teaproduction.Model.CompanyModel;
+import com.tea.teaproduction.Model.ItemListModel;
 import com.tea.teaproduction.Model.SectorModel;
 import com.tea.teaproduction.Model.ShiftModel;
 import com.tea.teaproduction.R;
@@ -107,7 +110,142 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
             loadSectorFromServer();
             loadEmployeeDetailsFromServer();
             loadConsignmentFromLocalToServer();
+            loadCompanyListFromServer();
+            loadCategoryListFromServer();
+            loadItemListFromServer();
         }
+    }
+
+    private void loadCompanyListFromServer() {
+        StringRequest sr = new StringRequest(Request.Method.POST, Urls.COMPANY_LIST, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Log.d("Company_RES", response);
+                    JSONArray jsonArray = jsonObject.getJSONArray("result");
+                    List<CompanyModel> companyModel = new ArrayList<>();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        String ItemId = object.getString("ItemId");
+                        String ItemName = object.getString("ItemName");
+
+                        Cursor cursor = dbHelper.getCompanyList();
+                        if (cursor != null && cursor.getCount() > 0) {
+                            while (cursor.moveToNext()) {
+                                if (!ItemId.equalsIgnoreCase(cursor.getString(0))) {
+                                    dbHelper.insertCompany(ItemId, ItemName);
+                                }
+                            }
+                        } else {
+                            dbHelper.insertCompany(ItemId, ItemName);
+                        }
+
+                        //dbHelper.insertSector(SectorId,SectorName);
+
+                        companyModel.add(new CompanyModel(ItemId, ItemName));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Getting some troubles", Toast.LENGTH_SHORT).show();
+                Log.d("ERROR_RES", error.getMessage());
+            }
+        });
+        Volley.newRequestQueue(getApplicationContext()).add(sr);
+    }
+
+    private void loadCategoryListFromServer() {
+        StringRequest sr = new StringRequest(Request.Method.POST, Urls.ITEM_CATEGORY_LIST, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Log.d("Company_RES", response);
+                    JSONArray jsonArray = jsonObject.getJSONArray("result");
+                    List<CategoryListModel> categoryListModel = new ArrayList<>();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        String ItemCategoryId = object.getString("ItemCategoryId");
+                        String CategoryName = object.getString("CategoryName");
+
+                        Cursor cursor = dbHelper.getItemCategory();
+                        if (cursor != null && cursor.getCount() > 0) {
+                            while (cursor.moveToNext()) {
+                                if (!ItemCategoryId.equalsIgnoreCase(cursor.getString(0))) {
+                                    dbHelper.insertCompany(ItemCategoryId, CategoryName);
+                                }
+                            }
+                        } else {
+                            dbHelper.insertCompany(ItemCategoryId, CategoryName);
+                        }
+
+                        //dbHelper.insertSector(SectorId,SectorName);
+
+                        categoryListModel.add(new CategoryListModel(ItemCategoryId, CategoryName));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Getting some troubles", Toast.LENGTH_SHORT).show();
+                Log.d("ERROR_RES", error.getMessage());
+            }
+        });
+        Volley.newRequestQueue(getApplicationContext()).add(sr);
+    }
+
+    private void loadItemListFromServer() {
+        StringRequest sr = new StringRequest(Request.Method.POST, Urls.ITEM_LIST, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Log.d("Company_RES", response);
+                    JSONArray jsonArray = jsonObject.getJSONArray("result");
+                    List<ItemListModel> itemListModel = new ArrayList<>();
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        String ItemId = object.getString("ItemId");
+                        String ItemName = object.getString("ItemName");
+
+                        Cursor cursor = dbHelper.getItemList();
+                        if (cursor != null && cursor.getCount() > 0) {
+                            while (cursor.moveToNext()) {
+                                if (!ItemId.equalsIgnoreCase(cursor.getString(0))) {
+                                    dbHelper.insertItemList(ItemId, ItemName);
+                                }
+                            }
+                        } else {
+                            dbHelper.insertItemList(ItemId, ItemName);
+                        }
+
+                        //dbHelper.insertSector(SectorId,SectorName);
+
+                        itemListModel.add(new ItemListModel(ItemId, ItemName));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Getting some troubles", Toast.LENGTH_SHORT).show();
+                Log.d("ERROR_RES", error.getMessage());
+            }
+        });
+        Volley.newRequestQueue(getApplicationContext()).add(sr);
     }
 
     private void loadConsignmentFromLocalToServer() {
