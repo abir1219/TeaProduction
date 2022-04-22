@@ -17,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.tea.teaproduction.Helper.DbHelper;
+import com.tea.teaproduction.MainActivity;
 import com.tea.teaproduction.Model.CategoryListModel;
 import com.tea.teaproduction.Model.CategoryModel;
 import com.tea.teaproduction.Model.CompanyModel;
@@ -196,16 +197,21 @@ public class StockInFragment extends Fragment implements View.OnClickListener {
     }
 
     private void btnClick() {
+
         binding.tieCompany.setOnClickListener(this);
         binding.tieCategory.setOnClickListener(this);
         binding.tieItem.setOnClickListener(this);
         binding.tieInvoiceDate.setOnClickListener(this);
         binding.tvSave.setOnClickListener(this);
+        binding.llMenu.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.llMenu:
+                ((MainActivity) getActivity()).openDrawer();
+                break;
             case R.id.tvSave:
                 checkDetails();
                 break;
