@@ -61,11 +61,42 @@ public class DbHelper extends SQLiteOpenHelper {
                         "(ItemId TEXT PRIMARY KEY,ItemName TEXT)"
         );
 
-        db.execSQL(
-                "create table stock " +
-                        "(ItemId TEXT ,ItemCatID TEXT,CompanyID TEXT,SGST TEXT,CGST TEXT,IGST TEXT,PurchaseDate TEXT," +
+        db.execSQL("CREATE TABLE stock (" +
+                        " StockId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                        " ItemId text DEFAULT NULL," +
+                        " ItemCategoryId text DEFAULT NULL," +
+                        " CompanyId text DEFAULT NULL," +
+                        " ItemRate text DEFAULT NULL," +
+                        " SGST text DEFAULT NULL," +
+                        " CGST text DEFAULT NULL," +
+                        " IGST text DEFAULT NULL," +
+                        " ItemTotal text DEFAULT NULL," +
+                        " PurchaseDate text DEFAULT NULL," +
+                        " PurchaseRemark text," +
+                        " StockIn text DEFAULT NULL," +
+                        " DispatchDate text DEFAULT NULL," +
+                        " DispatchRemark text," +
+                        " StockOut text DEFAULT NULL," +
+                        " InvoiceNumber text DEFAULT NULL," +
+                        " InvoiceDate text DEFAULT NULL," +
+                        " UnitPrice text DEFAULT NULL," +
+                        " CustomPrice1 text DEFAULT NULL," +
+                        " CustompriceValue1 text DEFAULT NULL," +
+                        " CustomPrice2 text DEFAULT NULL," +
+                        " CustompriceValue2 text DEFAULT NULL," +
+                        " CustomPrice3 text DEFAULT NULL," +
+                        " CustompriceValue3 text DEFAULT NULL," +
+                        " Available CHECK( Available IN ('Yes','No')) DEFAULT 'Yes'," +
+                        " CreatedOn timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                        " ModifiedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP) "
+
+
+
+
+                /*"create table stock " +
+                        "(StockId INT PRIMARY KEY AUTOINCREMENT,ItemId TEXT ,ItemCatID TEXT,CompanyID TEXT,SGST TEXT,CGST TEXT,IGST TEXT,PurchaseDate TEXT," +
                         "REMARK TEXT,TotalItem TEXT,InvoiceNo TEXT,InvoiceDate TEXT,UnitPrice TEXT,CustomPrice1 TEXT," +
-                        "CustomValue1 TEXT,CustomPrice2 TEXT,CustomValue2 TEXT,CustomPrice3 TEXT,CustomValue3 TEXT)"
+                        "CustomValue1 TEXT,CustomPrice2 TEXT,CustomValue2 TEXT,CustomPrice3 TEXT,CustomValue3 TEXT)"*/
         );
     }
 
@@ -92,7 +123,7 @@ public class DbHelper extends SQLiteOpenHelper {
         cv.put("EmpFullName", empName);
 
         long result = db.insert("employee", null, cv);
-        
+
         if (result == -1) {
             return false;
         } else {
@@ -102,15 +133,15 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     public boolean insertCategory(String GeadeCategoryId, String GeadeCategoryName) {
-        Log.d("GeadeCategoryId",GeadeCategoryId);
-        Log.d("GeadeCategoryName",GeadeCategoryName);
+        Log.d("GeadeCategoryId", GeadeCategoryId);
+        Log.d("GeadeCategoryName", GeadeCategoryName);
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("GeadeCategoryId", GeadeCategoryId);
         cv.put("GeadeCategoryName", GeadeCategoryName);
 
         long result = db.insert("category", null, cv);
-        
+
         if (result == -1) {
             return false;
         } else {
@@ -151,7 +182,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public boolean insertCompany(String CompanyId, String CompanyName) {
-        Log.d("DB_COMPANY_ID",CompanyId);
+        Log.d("DB_COMPANY_ID", CompanyId);
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("CompanyId", CompanyId);
@@ -217,7 +248,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteConsignmentData(){
+    public void deleteConsignmentData() {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.execSQL("DROP TABLE consignment");
@@ -228,41 +259,61 @@ public class DbHelper extends SQLiteOpenHelper {
         );
     }
 
-    public boolean addStock(String ItemId,String ItemCatID ,String CompanyID ,String SGST ,String CGST ,String IGST ,
-                            String PurchaseDate ,String REMARK ,String TotalItem ,String InvoiceNo ,String InvoiceDate ,
-                            String UnitPrice ,String CustomPrice1,String CustomValue1,String CustomPrice2 ,
-                            String CustomValue2 ,String CustomPrice3 ,String CustomValue3 ){
+    public boolean addStock(String ItemId, String ItemCatID, String CompanyID, String SGST, String CGST, String IGST,
+                            String PurchaseDate, String REMARK, String InvoiceNo, String InvoiceDate,
+                            String UnitPrice, String CustomPrice1, String CustomValue1, String CustomPrice2,
+                            String CustomValue2, String CustomPrice3, String CustomValue3, String StockIn) {
+
+
+        Double rate = Double.parseDouble(UnitPrice) * Double.parseDouble(StockIn);
+        Double ItemTotal = 0.0;
+        int totalGST = 0;
+        if (IGST.equals("0")) {
+            totalGST = Integer.parseInt(IGST);
+            ItemTotal = (rate + (rate * totalGST) / 100);
+        } else if (!CGST.equals("0") && !SGST.equals("0")) {
+            totalGST = Integer.parseInt(CGST) + Integer.parseInt(SGST);
+            Log.d("totalGST: ",""+totalGST);
+            ItemTotal = (rate + (rate * totalGST) / 100);
+            Log.d("ItemTotal: ",""+ItemTotal);
+        }
+
+        //Double ItemTotal = (rate + (rate * totalGST) / 100);
+
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("ItemId",ItemId);
-        contentValues.put("ItemCatID",ItemCatID);
-        contentValues.put("CompanyID",CompanyID);
-        contentValues.put("SGST",SGST);
-        contentValues.put("CGST",CGST);
-        contentValues.put("IGST",IGST);
-        contentValues.put("PurchaseDate",PurchaseDate);
-        contentValues.put("REMARK",REMARK);
-        contentValues.put("TotalItem",TotalItem);
-        contentValues.put("InvoiceNo",InvoiceNo);
-        contentValues.put("InvoiceDate",InvoiceDate);
-        contentValues.put("UnitPrice",UnitPrice);
-        contentValues.put("CustomPrice1",CustomPrice1);
-        contentValues.put("CustomValue1",CustomValue1);
-        contentValues.put("CustomPrice2",CustomPrice2);
-        contentValues.put("CustomValue2",CustomValue2);
-        contentValues.put("CustomPrice3",CustomPrice3);
-        contentValues.put("CustomValue3",CustomValue3);
+        contentValues.put("ItemId", ItemId);
+        contentValues.put("ItemCategoryId", ItemCatID);
+        contentValues.put("CompanyId", CompanyID);
+        contentValues.put("SGST", SGST);
+        contentValues.put("CGST", CGST);
+        contentValues.put("IGST", IGST);
+        contentValues.put("PurchaseDate", PurchaseDate);
+        contentValues.put("StockIn", StockIn);
+        contentValues.put("PurchaseRemark", REMARK);
+        contentValues.put("InvoiceNumber", InvoiceNo);
+        contentValues.put("InvoiceDate", InvoiceDate);
+        contentValues.put("UnitPrice", UnitPrice);
+        contentValues.put("CustomPrice1", CustomPrice1);
+        contentValues.put("CustompriceValue1", CustomValue1);
+        contentValues.put("CustomPrice2", CustomPrice2);
+        contentValues.put("CustompriceValue2", CustomValue2);
+        contentValues.put("CustomPrice3", CustomPrice3);
+        contentValues.put("CustompriceValue3", CustomValue3);
+        contentValues.put("ItemRate", String.format("%.2f", rate));
+        contentValues.put("ItemTotal", String.format("%.2f", ItemTotal));
 
 
-        long result = db.insert("stock",null,contentValues);
+        long result = db.insert("stock", null, contentValues);
         db.close();
-        if(result == -1)
+        if (result == -1)
             return false;
         else
             return true;
     }
 
-    public Cursor getStockDetails(){
+    public Cursor getStockDetails() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from stock", null);
         if (cursor.getCount() > 0) {
@@ -272,7 +323,7 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteStockData(){
+    public void deleteStockData() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE stock");
 
@@ -283,7 +334,6 @@ public class DbHelper extends SQLiteOpenHelper {
                         "CustomValue1 TEXT,CustomPrice2 TEXT,CustomValue2 TEXT,CustomPrice3 TEXT,CustomValue3 TEXT)"
         );
     }
-
 
 
     public Cursor getConsignmentData() {
@@ -300,7 +350,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getCategoryData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from category", null);
-        
+
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -311,7 +361,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getShiftData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from shift", null);
-        
+
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -322,7 +372,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getSectorData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from sector", null);
-        
+
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -333,7 +383,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getCompanyList() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from company", null);
-        
+
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -344,7 +394,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getItemCategory() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from itemCategory", null);
-        
+
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -355,7 +405,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getItemList() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from itemList", null);
-        
+
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -366,7 +416,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getAllEmployee() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from employee", null);
-        
+
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -382,6 +432,13 @@ public class DbHelper extends SQLiteOpenHelper {
         } else {
             return null;
         }
+    }
+
+
+    public void stockDispatch(String Item_id ,String total_out_stock,String despatch_date ){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("Select * from stock where ItemId = ?",new String[]{Item_id});
+
     }
 
 

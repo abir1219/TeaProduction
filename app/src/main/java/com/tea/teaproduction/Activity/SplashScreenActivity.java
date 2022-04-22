@@ -114,6 +114,16 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
             loadCompanyListFromServer();
             loadCategoryListFromServer();
             loadItemListFromServer();
+            getStockDetails();
+        }
+    }
+
+    private void getStockDetails() {
+        Cursor cursor = dbHelper.getStockDetails();
+        if(cursor != null && cursor.getCount() > 0){
+            while (cursor.moveToNext()){
+                Log.d("CURSOR_RES",cursor.toString());
+            }
         }
     }
 
@@ -143,7 +153,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                 StringRequest sr = new StringRequest(Request.Method.POST, Urls.PURCHASE_STOCK, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        dbHelper.deleteStockData();
+                        //dbHelper.deleteStockData();
                     }
                 }, new Response.ErrorListener() {
                     @Override

@@ -39,7 +39,7 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:fillViewport="true">
 
             <LinearLayout
@@ -47,9 +47,83 @@
                 android:layout_height="match_parent"
                 android:layout_below="@+id/llMenu"
                 android:layout_marginLeft="20dp"
+                android:gravity="center"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
                 android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColorHint="@color/black4"
+                    android:background="@drawable/edit_text_background"
+                    app:errorTextColor="@color/black"
+                    app:hintTextColor="@color/black4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tieItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableEnd="@drawable/ic_arrow_drop_down"
+                        android:focusable="false"
+                        android:hint="Select Particular Item"
+                        android:background="@drawable/edit_text_background"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textColor="@color/black"
+                        android:textCursorDrawable="@null"
+                        android:textSize="15sp" />
+
+                    <!--</LinearLayout>-->
+
+                    <Spinner
+                        android:id="@+id/spItem"
+                        android:layout_width="match_parent"
+                        android:layout_height=".01dp"
+                        android:backgroundTint="@color/baseColor"
+                        android:padding="5dp"
+                        android:visibility="gone" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilTotalItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/edit_text_background"
+                    android:textColorHint="@color/black"
+                    app:errorEnabled="false"
+                    app:errorTextColor="@color/black"
+                    app:hintTextColor="@color/black4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tieTotalItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:hint="Total Item"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textColor="@color/black"
+                        android:textCursorDrawable="@null"
+                        android:textSize="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/tvSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:text="Dispatch Stock"
+                    android:textColor="@color/baseColor"
+                    android:textSize="17sp" />
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

@@ -248,17 +248,18 @@ public class StockInFragment extends Fragment implements View.OnClickListener {
 
     private void checkDetails() {
         boolean isSaved = dbHelper.addStock(
-                itemId, categoryId, companyId, binding.tieSgst.getText().toString(),
-                binding.tieCgst.getText().toString(),
-                binding.tieIgst.getText().toString(),
+                itemId, categoryId, companyId,
+                !binding.tieSgst.getText().toString().isEmpty() ? binding.tieSgst.getText().toString() : "0",
+                !binding.tieCgst.getText().toString().isEmpty() ? binding.tieCgst.getText().toString() : "0",
+                !binding.tieIgst.getText().toString().isEmpty() ? binding.tieIgst.getText().toString() : "0",
                 new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()),
-                binding.tieRemark.getText().toString(), binding.tieTotalItem.getText().toString(),
+                binding.tieRemark.getText().toString(),
                 binding.tieInvoiceNo.getText().toString(), binding.tieInvoiceDate.getText().toString(),
-                binding.tieRate.getText().toString(), binding.tieCustomPrice1.getText().toString(),
+                binding.tieTotalItem.getText().toString(), binding.tieCustomPrice1.getText().toString(),
                 binding.tieCustomValue1.getText().toString(),
                 binding.tieCustomPrice2.getText().toString(), binding.tieCustomValue2.getText().toString(),
                 binding.tieCustomPrice3.getText().toString(),
-                binding.tieCustomValue3.getText().toString()
+                binding.tieCustomValue3.getText().toString(), binding.tieRate.getText().toString()
         );
 
         if (isSaved) {
