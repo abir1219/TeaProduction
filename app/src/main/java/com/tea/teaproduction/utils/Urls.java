@@ -3,7 +3,6 @@ package com.tea.teaproduction.utils;
 public class Urls {
     public static String BASE_URL = "http://sketchmeglobal.com/tea/user/";
 
-
     /*
     @Function : consignment_add
     @Method : POST
@@ -73,4 +72,12 @@ public class Urls {
     @Method : POST
      */
     public static final String ITEM_LIST = BASE_URL + "item_list";
+
+
+    /*
+    @Function : purchase_stock
+    @Method : POST
+    @Parameter : Item_id ,Item_category_id ,Company_id,sgst,igst,cgst,Puchase_date (required),puchase_remark,stock_in (required),nvoice_number (required),Invoice_date (required),Unit_price (required),custom_price1,custom_value1,custom_price2,custom_value2,custom_price3,custom_value3
+     */
+    public static final String PURCHASE_STOCK = BASE_URL + "purchase_stock";
 }

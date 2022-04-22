@@ -9,7 +9,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="55dp"
+        android:layout_marginBottom="65dp"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -203,7 +203,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:hint="Item Rate"
+                android:hint="Unit Price"
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:maxLines="1"
@@ -211,6 +211,282 @@
                 android:textCursorDrawable="@null"
                 android:textSize="15sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCgst"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColorHint="@color/black"
+            app:errorEnabled="false"
+            app:errorTextColor="@color/black"
+            app:hintTextColor="@color/black4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieCgst"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="CGST"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSgst"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColorHint="@color/black"
+            app:errorEnabled="false"
+            app:errorTextColor="@color/black"
+            app:hintTextColor="@color/black4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieSgst"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="SGST"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilIgst"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColorHint="@color/black"
+            app:errorEnabled="false"
+            app:errorTextColor="@color/black"
+            app:hintTextColor="@color/black4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieIgst"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="IGST"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilInvoiceNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColorHint="@color/black"
+            app:errorEnabled="false"
+            app:errorTextColor="@color/black"
+            app:hintTextColor="@color/black4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieInvoiceNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="Invoice Number"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilInvoiceDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColorHint="@color/black"
+            app:errorEnabled="false"
+            app:errorTextColor="@color/black"
+            app:hintTextColor="@color/black4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieInvoiceDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="Invoice Date"
+                android:imeOptions="actionNext"
+                android:focusable="false"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp"  />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCustomPrice1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColorHint="@color/black"
+            app:errorEnabled="false"
+            app:errorTextColor="@color/black"
+            app:hintTextColor="@color/black4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieCustomPrice1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="Custom Price 1"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCustomValue1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColorHint="@color/black"
+            app:errorEnabled="false"
+            app:errorTextColor="@color/black"
+            app:hintTextColor="@color/black4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieCustomValue1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="Custom Value 1"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCustomPrice2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColorHint="@color/black"
+            app:errorEnabled="false"
+            app:errorTextColor="@color/black"
+            app:hintTextColor="@color/black4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieCustomPrice2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="Custom Price 2"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCustomValue2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColorHint="@color/black"
+            app:errorEnabled="false"
+            app:errorTextColor="@color/black"
+            app:hintTextColor="@color/black4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieCustomValue2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="Custom Value 2"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCustomPrice3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColorHint="@color/black"
+            app:errorEnabled="false"
+            app:errorTextColor="@color/black"
+            app:hintTextColor="@color/black4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieCustomPrice3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="Custom Price 3"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCustomValue3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColorHint="@color/black"
+            app:errorEnabled="false"
+            app:errorTextColor="@color/black"
+            app:hintTextColor="@color/black4">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tieCustomValue3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint="Custom Value 3"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilRemark"
@@ -241,7 +517,7 @@
             android:id="@+id/tvSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
             android:gravity="center"
             android:textStyle="bold"
             android:text="Add Stock"

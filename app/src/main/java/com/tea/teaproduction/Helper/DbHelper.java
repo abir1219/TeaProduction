@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -22,42 +23,49 @@ public class DbHelper extends SQLiteOpenHelper {
 // TODO Auto-generated method stub
         db.execSQL(
                 "create table category " +
-                        "(GeadeCategoryId text PRIMARY KEY, GeadeCategoryName text)"
+                        "(GeadeCategoryId TEXT PRIMARY KEY, GeadeCategoryName TEXT)"
         );
 
         db.execSQL(
                 "create table shift " +
-                        "(ShiftId text PRIMARY KEY, ShiftName text)"
+                        "(ShiftId TEXT PRIMARY KEY, ShiftName TEXT)"
         );
 
         db.execSQL(
                 "create table sector " +
-                        "(SectorId text PRIMARY KEY, SectorName text)"
+                        "(SectorId TEXT PRIMARY KEY, SectorName TEXT)"
         );
 
         db.execSQL(
                 "create table employee " +
-                        "(EmpId text PRIMARY KEY,EmpCode text, EmpFullName text)"
+                        "(EmpId TEXT PRIMARY KEY,EmpCode TEXT, EmpFullName TEXT)"
         );
 
         db.execSQL(
                 "create table consignment " +
-                        "(EmpId text,EmpCode text,Category text,Shift text, Sector text,Weight text,Date text)"
+                        "(EmpId TEXT,EmpCode TEXT,Category TEXT,Shift TEXT, Sector TEXT,Weight TEXT,Date TEXT)"
         );
 
         db.execSQL(
                 "create table company " +
-                        "(CompanyId text PRIMARY KEY,CompanyName text)"
+                        "(CompanyId TEXT PRIMARY KEY,CompanyName TEXT)"
         );
 
         db.execSQL(
                 "create table itemCategory " +
-                        "(ItemCategoryId text PRIMARY KEY,CategoryName text)"
+                        "(ItemCategoryId TEXT PRIMARY KEY,CategoryName TEXT)"
         );
 
         db.execSQL(
                 "create table itemList " +
-                        "(ItemId text PRIMARY KEY,ItemName text)"
+                        "(ItemId TEXT PRIMARY KEY,ItemName TEXT)"
+        );
+
+        db.execSQL(
+                "create table stock " +
+                        "(ItemId TEXT ,ItemCatID TEXT,CompanyID TEXT,SGST TEXT,CGST TEXT,IGST TEXT,PurchaseDate TEXT," +
+                        "REMARK TEXT,TotalItem TEXT,InvoiceNo TEXT,InvoiceDate TEXT,UnitPrice TEXT,CustomPrice1 TEXT," +
+                        "CustomValue1 TEXT,CustomPrice2 TEXT,CustomValue2 TEXT,CustomPrice3 TEXT,CustomValue3 TEXT)"
         );
     }
 
@@ -71,6 +79,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS company");
         db.execSQL("DROP TABLE IF EXISTS itemCategory");
         db.execSQL("DROP TABLE IF EXISTS itemList");
+        db.execSQL("DROP TABLE IF EXISTS stock");
         onCreate(db);
     }
 
@@ -83,6 +92,7 @@ public class DbHelper extends SQLiteOpenHelper {
         cv.put("EmpFullName", empName);
 
         long result = db.insert("employee", null, cv);
+        
         if (result == -1) {
             return false;
         } else {
@@ -92,12 +102,15 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     public boolean insertCategory(String GeadeCategoryId, String GeadeCategoryName) {
+        Log.d("GeadeCategoryId",GeadeCategoryId);
+        Log.d("GeadeCategoryName",GeadeCategoryName);
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("GeadeCategoryId", GeadeCategoryId);
         cv.put("GeadeCategoryName", GeadeCategoryName);
 
         long result = db.insert("category", null, cv);
+        
         if (result == -1) {
             return false;
         } else {
@@ -113,6 +126,8 @@ public class DbHelper extends SQLiteOpenHelper {
         cv.put("ShiftName", ShiftName);
 
         long result = db.insert("shift", null, cv);
+
+        db.close();
         if (result == -1) {
             return false;
         } else {
@@ -127,6 +142,7 @@ public class DbHelper extends SQLiteOpenHelper {
         cv.put("SectorName", SectorName);
 
         long result = db.insert("sector", null, cv);
+        db.close();
         if (result == -1) {
             return false;
         } else {
@@ -135,12 +151,14 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public boolean insertCompany(String CompanyId, String CompanyName) {
+        Log.d("DB_COMPANY_ID",CompanyId);
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("CompanyId", CompanyId);
         cv.put("CompanyName", CompanyName);
 
         long result = db.insert("company", null, cv);
+        db.close();
         if (result == -1) {
             return false;
         } else {
@@ -155,6 +173,7 @@ public class DbHelper extends SQLiteOpenHelper {
         cv.put("CategoryName", CategoryName);
 
         long result = db.insert("itemCategory", null, cv);
+        db.close();
         if (result == -1) {
             return false;
         } else {
@@ -169,6 +188,7 @@ public class DbHelper extends SQLiteOpenHelper {
         cv.put("ItemName", ItemName);
 
         long result = db.insert("itemList", null, cv);
+        db.close();
         if (result == -1) {
             return false;
         } else {
@@ -189,6 +209,7 @@ public class DbHelper extends SQLiteOpenHelper {
         cv.put("Date", date);
 
         long result = db.insert("consignment", null, cv);
+        db.close();
         if (result == -1) {
             return false;
         } else {
@@ -196,9 +217,79 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void deleteConsignmentData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DROP TABLE consignment");
+
+        db.execSQL(
+                "create table consignment " +
+                        "(EmpId TEXT,EmpCode TEXT,Category TEXT,Shift TEXT, Sector TEXT,Weight TEXT,Date TEXT)"
+        );
+    }
+
+    public boolean addStock(String ItemId,String ItemCatID ,String CompanyID ,String SGST ,String CGST ,String IGST ,
+                            String PurchaseDate ,String REMARK ,String TotalItem ,String InvoiceNo ,String InvoiceDate ,
+                            String UnitPrice ,String CustomPrice1,String CustomValue1,String CustomPrice2 ,
+                            String CustomValue2 ,String CustomPrice3 ,String CustomValue3 ){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ItemId",ItemId);
+        contentValues.put("ItemCatID",ItemCatID);
+        contentValues.put("CompanyID",CompanyID);
+        contentValues.put("SGST",SGST);
+        contentValues.put("CGST",CGST);
+        contentValues.put("IGST",IGST);
+        contentValues.put("PurchaseDate",PurchaseDate);
+        contentValues.put("REMARK",REMARK);
+        contentValues.put("TotalItem",TotalItem);
+        contentValues.put("InvoiceNo",InvoiceNo);
+        contentValues.put("InvoiceDate",InvoiceDate);
+        contentValues.put("UnitPrice",UnitPrice);
+        contentValues.put("CustomPrice1",CustomPrice1);
+        contentValues.put("CustomValue1",CustomValue1);
+        contentValues.put("CustomPrice2",CustomPrice2);
+        contentValues.put("CustomValue2",CustomValue2);
+        contentValues.put("CustomPrice3",CustomPrice3);
+        contentValues.put("CustomValue3",CustomValue3);
+
+
+        long result = db.insert("stock",null,contentValues);
+        db.close();
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public Cursor getStockDetails(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from stock", null);
+        if (cursor.getCount() > 0) {
+            return cursor;
+        } else {
+            return null;
+        }
+    }
+
+    public void deleteStockData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE stock");
+
+        db.execSQL(
+                "create table stock " +
+                        "(ItemId TEXT ,ItemCatID TEXT,CompanyID TEXT,SGST TEXT,CGST TEXT,IGST TEXT,PurchaseDate TEXT," +
+                        "REMARK TEXT,TotalItem TEXT,InvoiceNo TEXT,InvoiceDate TEXT,UnitPrice TEXT,CustomPrice1 TEXT," +
+                        "CustomValue1 TEXT,CustomPrice2 TEXT,CustomValue2 TEXT,CustomPrice3 TEXT,CustomValue3 TEXT)"
+        );
+    }
+
+
+
     public Cursor getConsignmentData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from consignment", null);
+
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -209,6 +300,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getCategoryData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from category", null);
+        
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -219,6 +311,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getShiftData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from shift", null);
+        
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -229,6 +322,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getSectorData() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from sector", null);
+        
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -239,6 +333,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getCompanyList() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from company", null);
+        
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -249,6 +344,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getItemCategory() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from itemCategory", null);
+        
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -259,6 +355,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getItemList() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from itemList", null);
+        
         if (cursor.getCount() > 0) {
             return cursor;
         } else {
@@ -269,6 +366,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public Cursor getAllEmployee() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("Select * from employee", null);
+        
         if (cursor.getCount() > 0) {
             return cursor;
         } else {

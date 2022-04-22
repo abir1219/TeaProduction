@@ -17,5 +17,11 @@
         android:label="ConsignmenList"
         tools:layout="@layout/fragment_consignment_list"/>
 
+    <fragment
+        android:id="@+id/nav_stock_in"
+        android:name="com.tea.teaproduction.ui.StockManagement.StockInFragment"
+        android:label="Stock In"
+        tools:layout="@layout/fragment_stock_in"/>
+
 
 </navigation>

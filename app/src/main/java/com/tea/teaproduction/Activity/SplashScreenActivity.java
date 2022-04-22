@@ -110,9 +110,74 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
             loadSectorFromServer();
             loadEmployeeDetailsFromServer();
             loadConsignmentFromLocalToServer();
+            loadStockFromLocalToServer();
             loadCompanyListFromServer();
             loadCategoryListFromServer();
             loadItemListFromServer();
+        }
+    }
+
+    private void loadStockFromLocalToServer() {
+        Cursor cursor = dbHelper.getStockDetails();
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String ItemId = cursor.getString(0);
+                String ItemCatID = cursor.getString(1);
+                String CompanyID = cursor.getString(2);
+                String SGST = cursor.getString(3);
+                String CGST = cursor.getString(4);
+                String IGST = cursor.getString(5);
+                String PurchaseDate = cursor.getString(6);
+                String REMARK = cursor.getString(7);
+                String TotalItem = cursor.getString(8);
+                String InvoiceNo = cursor.getString(9);
+                String InvoiceDate = cursor.getString(10);
+                String UnitPrice = cursor.getString(11);
+                String CustomPrice1 = cursor.getString(12);
+                String CustomValue1 = cursor.getString(13);
+                String CustomPrice2 = cursor.getString(14);
+                String CustomValue2 = cursor.getString(15);
+                String CustomPrice3 = cursor.getString(16);
+                String CustomValue3 = cursor.getString(17);
+
+                StringRequest sr = new StringRequest(Request.Method.POST, Urls.PURCHASE_STOCK, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        dbHelper.deleteStockData();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }) {
+                    @Nullable
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> body = new HashMap<>();
+                        body.put("Item_id", ItemId );
+                        body.put("Item_category_id", ItemCatID );
+                        body.put("Company_id", CompanyID );
+                        body.put("sgst", SGST );
+                        body.put("igst", IGST );
+                        body.put("cgst", CGST );
+                        body.put("Puchase_date", PurchaseDate );
+                        body.put("puchase_remark", REMARK );
+                        body.put("stock_in", TotalItem );
+                        body.put("Invoice_number", InvoiceNo );
+                        body.put("Invoice_date", InvoiceDate );
+                        body.put("unit_price", UnitPrice );
+                        body.put("custom_price1", CustomPrice1);
+                        body.put("custom_value1", CustomValue1);
+                        body.put("custom_price2", CustomPrice2 );
+                        body.put("custom_value2", CustomValue2 );
+                        body.put("custom_price3", CustomPrice3 );
+                        body.put("custom_value3", CustomValue3 );
+                        return body;
+                    }
+                };
+                Volley.newRequestQueue(SplashScreenActivity.this).add(sr);
+            }
         }
     }
 
@@ -122,28 +187,29 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    Log.d("Company_RES", response);
+                    Log.d("COMPANY_RES", response);
                     JSONArray jsonArray = jsonObject.getJSONArray("result");
                     List<CompanyModel> companyModel = new ArrayList<>();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject object = jsonArray.getJSONObject(i);
-                        String ItemId = object.getString("ItemId");
-                        String ItemName = object.getString("ItemName");
+                        String CompanyId = object.getString("CompanyId");
+                        String CompanyName = object.getString("CompanyName");
 
                         Cursor cursor = dbHelper.getCompanyList();
                         if (cursor != null && cursor.getCount() > 0) {
                             while (cursor.moveToNext()) {
-                                if (!ItemId.equalsIgnoreCase(cursor.getString(0))) {
-                                    dbHelper.insertCompany(ItemId, ItemName);
+                                System.out.println("Cursor: " + cursor.getString(0));
+                                if (!CompanyId.equals(cursor.getString(0))) {
+                                    Log.d("CompanyId & cursor: ", CompanyId + " & " + cursor.getString(0));
+                                    dbHelper.insertCompany(CompanyId, CompanyName);
+                                    continue;
                                 }
                             }
                         } else {
-                            dbHelper.insertCompany(ItemId, ItemName);
+                            dbHelper.insertCompany(CompanyId, CompanyName);
                         }
-
-                        //dbHelper.insertSector(SectorId,SectorName);
-
-                        companyModel.add(new CompanyModel(ItemId, ItemName));
+                        //dbHelper.insertShift(ShiftId,ShiftName);
+                        companyModel.add(new CompanyModel(CompanyId, CompanyName));
                     }
 
                 } catch (JSONException e) {
@@ -178,11 +244,12 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                         if (cursor != null && cursor.getCount() > 0) {
                             while (cursor.moveToNext()) {
                                 if (!ItemCategoryId.equalsIgnoreCase(cursor.getString(0))) {
-                                    dbHelper.insertCompany(ItemCategoryId, CategoryName);
+                                    dbHelper.insertItemCategory(ItemCategoryId, CategoryName);
+                                    break;
                                 }
                             }
                         } else {
-                            dbHelper.insertCompany(ItemCategoryId, CategoryName);
+                            dbHelper.insertItemCategory(ItemCategoryId, CategoryName);
                         }
 
                         //dbHelper.insertSector(SectorId,SectorName);
@@ -210,7 +277,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    Log.d("Company_RES", response);
+                    Log.d("ITEM_RES", response);
                     JSONArray jsonArray = jsonObject.getJSONArray("result");
                     List<ItemListModel> itemListModel = new ArrayList<>();
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -223,6 +290,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                             while (cursor.moveToNext()) {
                                 if (!ItemId.equalsIgnoreCase(cursor.getString(0))) {
                                     dbHelper.insertItemList(ItemId, ItemName);
+                                    break;
                                 }
                             }
                         } else {
@@ -263,25 +331,25 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                 StringRequest sr = new StringRequest(Request.Method.POST, Urls.CONSIGNMENT_ADD, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        dbHelper.deleteConsignmentData();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
                     }
-                }){
+                }) {
                     @Nullable
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> body = new HashMap<>();
-                        body.put("emp_id",EmpId);
-                        body.put("emp_code",EmpCode);
-                        body.put("category",Category);
-                        body.put("shift",Shift);
-                        body.put("sector",Sector);
-                        body.put("weight",Weight);
-                        body.put("date",Date);
+                        body.put("emp_id", EmpId);
+                        body.put("emp_code", EmpCode);
+                        body.put("category", Category);
+                        body.put("shift", Shift);
+                        body.put("sector", Sector);
+                        body.put("weight", Weight);
+                        body.put("date", Date);
                         return body;
                     }
                 };
@@ -306,10 +374,11 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
 
                         Cursor cursor = dbHelper.getAllEmployee();
                         if (cursor != null && cursor.getCount() > 0) {
-                            Toast.makeText(SplashScreenActivity.this, "have", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(SplashScreenActivity.this, "have", Toast.LENGTH_SHORT).show();
                             while (cursor.moveToNext()) {
                                 if (!EmpId.equalsIgnoreCase(cursor.getString(0))) {
                                     dbHelper.insertEmployee(EmpId, EmpCode, EmpFullName);
+                                    break;
                                 }
                             }
                         } else {
@@ -350,6 +419,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                             while (cursor.moveToNext()) {
                                 if (!SectorId.equalsIgnoreCase(cursor.getString(0))) {
                                     dbHelper.insertSector(SectorId, SectorName);
+                                    break;
                                 }
                             }
                         } else {
@@ -394,6 +464,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                             while (cursor.moveToNext()) {
                                 if (!ShiftId.equalsIgnoreCase(cursor.getString(0))) {
                                     dbHelper.insertShift(ShiftId, ShiftName);
+                                    break;
                                 }
                             }
                         } else {
@@ -424,7 +495,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    Log.d("Category_RES", response);
+                    Log.d("Shift_RES", response);
                     JSONArray jsonArray = jsonObject.getJSONArray("result");
                     List<CategoryModel> categoryModel = new ArrayList<>();
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -437,11 +508,13 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                             while (cursor.moveToNext()) {
                                 if (!GeadeCategoryId.equalsIgnoreCase(cursor.getString(0))) {
                                     dbHelper.insertCategory(GeadeCategoryId, GeadeCategoryName);
+                                    break;
                                 }
                             }
                         } else {
                             dbHelper.insertCategory(GeadeCategoryId, GeadeCategoryName);
                         }
+                        //dbHelper.insertShift(ShiftId,ShiftName);
 
                         categoryModel.add(new CategoryModel(GeadeCategoryId, GeadeCategoryName));
                     }

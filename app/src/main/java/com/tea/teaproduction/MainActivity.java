@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity{
         modelList = new ArrayList<>();
 
         modelList.add(new DrawerModel(R.drawable.ic_baseline_home_24, "Home"));
+        modelList.add(new DrawerModel(R.drawable.ic_baseline_home_24, "Stock In"));
 
         DrawerAdapter drawerMenuAdapter = new DrawerAdapter(modelList, this);
         binding.rvMenu.setAdapter(drawerMenuAdapter);
@@ -91,7 +92,14 @@ public class MainActivity extends AppCompatActivity{
                 switch (pos) {
                     case 0:
                         Log.e("Pos", "= 0");
+                        navController.navigate(R.id.navigation_home, bundle, navBuilder.build());//This will open
                         openDrawer();
+                        break;
+                    case 1:
+                        Log.e("Pos", "= 0");
+                        navController.navigate(R.id.nav_stock_in, bundle, navBuilder.build());//This will open
+                        openDrawer();
+                        break;
                 }
             }
         });
