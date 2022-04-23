@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.tea.teaproduction.Helper.DbHelper;
 import com.tea.teaproduction.MainActivity;
@@ -17,8 +18,11 @@ import com.tea.teaproduction.Model.ItemListModel;
 import com.tea.teaproduction.R;
 import com.tea.teaproduction.databinding.FragmentStockOutBinding;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class StockOutFragment extends Fragment implements View.OnClickListener {
     FragmentStockOutBinding binding;
@@ -42,6 +46,7 @@ public class StockOutFragment extends Fragment implements View.OnClickListener {
     private void btnClick() {
         binding.llMenu.setOnClickListener(this);
         binding.tieItem.setOnClickListener(this);
+        binding.tvSave.setOnClickListener(this);
     }
 
     private void loadItemSpinner() {
@@ -97,6 +102,24 @@ public class StockOutFragment extends Fragment implements View.OnClickListener {
                 binding.tieItem.setText("");
                 binding.spItem.setVisibility(View.VISIBLE);
                 break;
+            case R.id.tvSave:
+                checkDetails();
+                break;
+        }
+    }
+
+    private void checkDetails() {
+        boolean result = dbHelper.stockDispatch(itemId,binding.tieTotalItem.getText().toString(),new SimpleDateFormat("yyyy-MM-dd",
+                Locale.getDefault()).format(new Date()),binding.tieRemark.getText().toString());
+
+        if(result){
+            Toast.makeText(getActivity(), "Successfully Dispatched", Toast.LENGTH_SHORT).show();
+            //itemId = "";
+            binding.tieItem.setText("");
+            binding.tieTotalItem.setText("");
+            binding.tieRemark.setText("");
+        }else{
+            Toast.makeText(getActivity(), "Stock is not available", Toast.LENGTH_SHORT).show();
         }
     }
 }

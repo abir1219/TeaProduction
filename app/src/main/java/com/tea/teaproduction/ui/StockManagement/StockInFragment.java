@@ -255,18 +255,21 @@ public class StockInFragment extends Fragment implements View.OnClickListener {
                 new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()),
                 binding.tieRemark.getText().toString(),
                 binding.tieInvoiceNo.getText().toString(), binding.tieInvoiceDate.getText().toString(),
-                binding.tieTotalItem.getText().toString(), binding.tieCustomPrice1.getText().toString(),
+                binding.tieRate.getText().toString(), binding.tieCustomPrice1.getText().toString(),
                 binding.tieCustomValue1.getText().toString(),
                 binding.tieCustomPrice2.getText().toString(), binding.tieCustomValue2.getText().toString(),
                 binding.tieCustomPrice3.getText().toString(),
-                binding.tieCustomValue3.getText().toString(), binding.tieRate.getText().toString()
+                binding.tieCustomValue3.getText().toString(), binding.tieTotalItem.getText().toString()
         );
 
         if (isSaved) {
             Toast.makeText(getActivity(), "Saved Successfully", Toast.LENGTH_SHORT).show();
-            itemId = "";
+            /*itemId = "";
             categoryId = "";
-            companyId = "";
+            companyId = "";*/
+            binding.tieCategory.setText("");
+            binding.tieCompany.setText("");
+            binding.tieItem.setText("");
             binding.tieSgst.setText("");
             binding.tieCgst.setText("");
             binding.tieIgst.setText("");

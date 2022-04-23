@@ -114,41 +114,32 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
             loadCompanyListFromServer();
             loadCategoryListFromServer();
             loadItemListFromServer();
-            getStockDetails();
         }
     }
 
-    private void getStockDetails() {
-        Cursor cursor = dbHelper.getStockDetails();
-        if(cursor != null && cursor.getCount() > 0){
-            while (cursor.moveToNext()){
-                Log.d("CURSOR_RES",cursor.toString());
-            }
-        }
-    }
 
     private void loadStockFromLocalToServer() {
         Cursor cursor = dbHelper.getStockDetails();
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
-                String ItemId = cursor.getString(0);
-                String ItemCatID = cursor.getString(1);
-                String CompanyID = cursor.getString(2);
-                String SGST = cursor.getString(3);
-                String CGST = cursor.getString(4);
-                String IGST = cursor.getString(5);
-                String PurchaseDate = cursor.getString(6);
-                String REMARK = cursor.getString(7);
-                String TotalItem = cursor.getString(8);
-                String InvoiceNo = cursor.getString(9);
-                String InvoiceDate = cursor.getString(10);
-                String UnitPrice = cursor.getString(11);
-                String CustomPrice1 = cursor.getString(12);
-                String CustomValue1 = cursor.getString(13);
-                String CustomPrice2 = cursor.getString(14);
-                String CustomValue2 = cursor.getString(15);
-                String CustomPrice3 = cursor.getString(16);
-                String CustomValue3 = cursor.getString(17);
+                String ItemId = cursor.getString(1);
+                String ItemCatID = cursor.getString(2);
+                String CompanyID = cursor.getString(3);
+                String SGST = cursor.getString(5);
+                String CGST = cursor.getString(6);
+                String IGST = cursor.getString(7);
+                String PurchaseDate = cursor.getString(9);
+                String REMARK = cursor.getString(10);
+                String TotalItem = cursor.getString(11);
+                String InvoiceNo = cursor.getString(15);
+                String InvoiceDate = cursor.getString(16);
+                String UnitPrice = cursor.getString(17);
+                String CustomPrice1 = cursor.getString(18);
+                String CustomValue1 = cursor.getString(19);
+                String CustomPrice2 = cursor.getString(20);
+                String CustomValue2 = cursor.getString(21);
+                String CustomPrice3 = cursor.getString(22);
+                String CustomValue3 = cursor.getString(23);
 
                 StringRequest sr = new StringRequest(Request.Method.POST, Urls.PURCHASE_STOCK, new Response.Listener<String>() {
                     @Override

@@ -6,8 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+
+import com.tea.teaproduction.ui.StockManagement.Model.StockModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -273,9 +279,9 @@ public class DbHelper extends SQLiteOpenHelper {
             ItemTotal = (rate + (rate * totalGST) / 100);
         } else if (!CGST.equals("0") && !SGST.equals("0")) {
             totalGST = Integer.parseInt(CGST) + Integer.parseInt(SGST);
-            Log.d("totalGST: ",""+totalGST);
+            Log.d("totalGST: ", "" + totalGST);
             ItemTotal = (rate + (rate * totalGST) / 100);
-            Log.d("ItemTotal: ",""+ItemTotal);
+            Log.d("ItemTotal: ", "" + ItemTotal);
         }
 
         //Double ItemTotal = (rate + (rate * totalGST) / 100);
@@ -434,11 +440,109 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
+    private int availableStock(String itemId) {
+        System.out.println("Item_id: " + itemId);
+        int availableStock = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from stock where ItemId = ? AND Available = ? ORDER BY StockId ASC",
+                new String[]{itemId, "Yes"});
+        System.out.println("COUNT_RES: " + cursor.getCount());
+        if (cursor != null && cursor.getCount() > 0) {
 
-    public void stockDispatch(String Item_id ,String total_out_stock,String despatch_date ){
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("Select * from stock where ItemId = ?",new String[]{Item_id});
+            while (cursor.moveToNext()) {
+                Log.d("StockIn", cursor.getString(11));
+                availableStock += Integer.parseInt(cursor.getString(11));
+            }
+            db.close();
+        }
+        return availableStock;
+    }
 
+    public boolean stockDispatch(String Item_id, String total_out_stock, String despatch_date, String DispatchRemark) {
+        int demandDispatchCount = Integer.parseInt(total_out_stock);
+        System.out.println("demandDispatchCount: " + demandDispatchCount);
+
+
+        int availableStock = availableStock(Item_id);
+        boolean status = false;
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select * from stock where ItemId = ? AND Available = ? ORDER BY StockId ASC",
+                new String[]{Item_id, "Yes"});
+
+        if (cursor != null && cursor.getCount() > 0) {
+            Log.d("CURSOR_OK", "YES");
+            System.out.println("availableStock: " + availableStock);
+            if (demandDispatchCount <= availableStock) {
+                System.out.println("Cursor_count: " + cursor.getCount());
+                System.out.println("cursor.moveToNext: " + cursor.moveToNext());
+                int stockCount = 0;
+
+                do {
+                    System.out.println("stockId: " + cursor.getString(0));
+                    String stockId = cursor.getString(0);
+                    int result = 0;
+                    ContentValues contentValues = new ContentValues();
+                    if (demandDispatchCount > Integer.parseInt(cursor.getString(11))) {
+                        stockCount += Integer.parseInt(cursor.getString(11));        //8
+                        result = demandDispatchCount - Integer.parseInt(cursor.getString(11));  //2
+                        System.out.println("RESULT_RES: " + result);
+                        if (result != 0) {
+                            if(stockCount <= demandDispatchCount){
+                                SQLiteDatabase database = this.getWritableDatabase();
+                                String newStockIn = "0";
+                                String newStockOut = cursor.getString(11);
+                                String sql = "UPDATE stock SET StockIn = " + "'" + newStockIn + "'" + ",StockOut = " + "'" + newStockOut + "'" +
+                                        ",Available = 'No',DispatchDate=" + "'" + despatch_date + "'" + "," +
+                                        "DispatchRemark=" + "'" + DispatchRemark + "'" + " WHERE StockId = " + "'" + stockId + "'";
+                                Log.d("SQL_RES", sql);
+                                database.execSQL(sql);
+                            }else{
+                                SQLiteDatabase database = this.getWritableDatabase();
+                                String newStockIn = String.valueOf(stockCount - demandDispatchCount);
+                                String newStockOut = String.valueOf(result);
+                                String sql = "UPDATE stock SET StockIn = " + "'" + newStockIn + "'" + ",StockOut = " + "'" + newStockOut + "'" +
+                                        ",Available = 'Yes',DispatchDate=" + "'" + despatch_date + "'" + "," +
+                                        "DispatchRemark=" + "'" + DispatchRemark + "'" + " WHERE StockId = " + "'" + stockId + "'";
+                                Log.d("SQL_RES", sql);
+                                database.execSQL(sql);
+                            }
+                        } else {
+                            /*SQLiteDatabase database = this.getWritableDatabase();
+                            String newStockIn = "0";
+                            String newStockOut = cursor.getString(11);
+                            String sql = "UPDATE stock SET StockIn = " + "'" + newStockIn + "'" + ",StockOut = " + "'" + newStockOut + "'" +
+                                    ",Available = 'No',DispatchDate=" + "'" + despatch_date + "'" + "," +
+                                    "DispatchRemark=" + "'" + DispatchRemark + "'" + " WHERE StockId = " + "'" + stockId + "'";
+                            Log.d("SQL_RES", sql);
+                            database.execSQL(sql);*/
+                            break;
+                        }
+                    } else {
+                        /*String newStockIn = String.valueOf(Integer.parseInt(cursor.getString(11)) - result);
+                        String newStockOut = String.valueOf(result);
+                        SQLiteDatabase database = this.getWritableDatabase();
+                        *//*contentValues.put("StockIn", newStockIn);
+                        contentValues.put("Available", "No");
+                        contentValues.put("StockOut", newStockOut);
+                        contentValues.put("DispatchDate", despatch_date);
+                        contentValues.put("DispatchRemark", DispatchRemark);*//*
+                        //database.update("stock", contentValues, "StockId = ?", new String[]{stockId});
+                        String sql = "UPDATE stock SET StockIn = " + "'" + newStockIn + "'" + ",StockOut = " + "'" + newStockOut + "'" +
+                                ",Available = 'Yes',DispatchDate=" + "'" + despatch_date + "'" + "," +
+                                "DispatchRemark=" + "'" + DispatchRemark + "'" + " WHERE StockId = " + "'" + stockId + "'";
+                        Log.d("SQL_RES", sql);
+                        database.execSQL(sql);*/
+                    }
+                    db.close();
+                } while (cursor.moveToNext());
+                status = true;
+            } else {
+                status = false;
+            }
+        }
+        return status;
     }
 
 
