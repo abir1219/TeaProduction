@@ -489,7 +489,7 @@ public class DbHelper extends SQLiteOpenHelper {
                         result = demandDispatchCount - Integer.parseInt(cursor.getString(11));  //2
                         System.out.println("RESULT_RES: " + result);
                         if (result != 0) {
-                            if(stockCount <= demandDispatchCount){
+                            if (stockCount <= demandDispatchCount) {
                                 SQLiteDatabase database = this.getWritableDatabase();
                                 String newStockIn = "0";
                                 String newStockOut = cursor.getString(11);
@@ -498,10 +498,10 @@ public class DbHelper extends SQLiteOpenHelper {
                                         "DispatchRemark=" + "'" + DispatchRemark + "'" + " WHERE StockId = " + "'" + stockId + "'";
                                 Log.d("SQL_RES", sql);
                                 database.execSQL(sql);
-                            }else{
+                            } else {
                                 SQLiteDatabase database = this.getWritableDatabase();
                                 String newStockIn = String.valueOf(stockCount - demandDispatchCount);
-                                String newStockOut = String.valueOf(result);
+                                String newStockOut = String.valueOf(result - 1);
                                 String sql = "UPDATE stock SET StockIn = " + "'" + newStockIn + "'" + ",StockOut = " + "'" + newStockOut + "'" +
                                         ",Available = 'Yes',DispatchDate=" + "'" + despatch_date + "'" + "," +
                                         "DispatchRemark=" + "'" + DispatchRemark + "'" + " WHERE StockId = " + "'" + stockId + "'";
