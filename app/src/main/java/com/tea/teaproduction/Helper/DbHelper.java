@@ -546,4 +546,14 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
+    public Cursor getSingleItemName(String itemId) {
+        System.out.println("ItemID: "+itemId);
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor = database.rawQuery("select * from itemList where ItemId = ?",new String[]{itemId});
+        if (cursor.getCount() > 0) {
+            return cursor;
+        } else {
+            return null;
+        }
+    }
 }

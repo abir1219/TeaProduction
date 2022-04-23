@@ -2,14 +2,15 @@ package com.tea.teaproduction.ui.StockManagement.Model;
 
 public class StockModel {
     int StockId;
-    String ItemId,ItemCategoryId,CompanyId,ItemRate,SGST,CGST,IGST,ItemTotal,PurchaseDate,PurchaseRemark,StockIn,DispatchDate,
+    String ItemId,ItemName,ItemCategoryId,CompanyId,ItemRate,SGST,CGST,IGST,ItemTotal,PurchaseDate,PurchaseRemark,StockIn,DispatchDate,
     DispatchRemark,StockOut,InvoiceNumber,InvoiceDate,UnitPrice,CustomPrice1,CustompriceValue1,CustomPrice2,CustompriceValue2,
             CustomPrice3,CustompriceValue3,Available;
 
 
-    public StockModel(int stockId, String itemId, String itemCategoryId, String companyId, String itemRate, String SGST, String CGST, String IGST, String itemTotal, String purchaseDate, String purchaseRemark,
+    public StockModel(int stockId, String itemId,String ItemName, String itemCategoryId, String companyId, String itemRate, String SGST, String CGST, String IGST, String itemTotal, String purchaseDate, String purchaseRemark,
                       String stockIn, String dispatchDate, String dispatchRemark, String stockOut, String invoiceNumber, String invoiceDate, String unitPrice, String customPrice1, String custompriceValue1, String customPrice2, String custompriceValue2, String customPrice3, String custompriceValue3, String available) {
         StockId = stockId;
+        ItemName = ItemName;
         ItemId = itemId;
         ItemCategoryId = itemCategoryId;
         CompanyId = companyId;
@@ -38,6 +39,10 @@ public class StockModel {
 
     public int getStockId() {
         return StockId;
+    }
+
+    public String getItemName() {
+        return ItemName;
     }
 
     public String getItemId() {
