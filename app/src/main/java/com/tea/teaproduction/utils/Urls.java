@@ -87,4 +87,11 @@ public class Urls {
     @Parameter : Item_id ,despatch_date ,total_out_stock
      */
     public static final String DISPATCH_STOCK = BASE_URL + "despatch_stock";
+
+    /*
+    @Function : user_login
+    @Method : POST
+    @Parameter : username ,password
+     */
+    public static final String LOGIN = BASE_URL + "user_login";
 }

@@ -24,6 +24,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tea.teaproduction.Helper.DbHelper;
 import com.tea.teaproduction.MainActivity;
+import com.tea.teaproduction.ManageSharedPreferenceData.YoDB;
 import com.tea.teaproduction.Model.CategoryListModel;
 import com.tea.teaproduction.Model.CompanyModel;
 import com.tea.teaproduction.Model.ItemListModel;
@@ -33,6 +34,7 @@ import com.tea.teaproduction.R;
 import com.tea.teaproduction.databinding.ActivitySplashScreenBinding;
 import com.tea.teaproduction.Model.CategoryModel;
 import com.tea.teaproduction.utils.ConnectionReceiver;
+import com.tea.teaproduction.utils.Constants;
 import com.tea.teaproduction.utils.Urls;
 
 import org.json.JSONArray;
@@ -62,23 +64,44 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
         loadAnimateLogo();
         loadData();
 
+        redirect();
 
-        mHandler = new Handler();
+
+        /*mHandler = new Handler();
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 //redirect();
-                /*if (YoDB.getPref().read(Constants.ID, "").isEmpty()) {
+                *//*if (YoDB.getPref().read(Constants.ID, "").isEmpty()) {
                     intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
                 } else {
                     intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-                }*/
+                }*//*
                 intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.fade_in_animation, R.anim.fade_out_animation);
                 finish();
             }
-        }, 4000);
+        }, 4000);*/
+    }
+
+
+        private void redirect() {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(YoDB.getPref().read(Constants.ID,"").isEmpty()){
+                        intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+                        overridePendingTransition(R.anim.fade_in_animation, R.anim.fade_out_animation);
+                        startActivity(intent);
+                        finish();
+                    }else{
+                        intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                        overridePendingTransition(R.anim.fade_in_animation, R.anim.fade_out_animation);
+                        startActivity(intent);
+                    }
+                }
+            },4000);
     }
 
     public boolean checkInternet() {
@@ -130,7 +153,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                 String IGST = cursor.getString(7);
                 String PurchaseDate = cursor.getString(9);
                 String REMARK = cursor.getString(10);
-                String TotalItem = cursor.getString(11);
+                String StockIn = cursor.getString(11);
                 String InvoiceNo = cursor.getString(15);
                 String InvoiceDate = cursor.getString(16);
                 String UnitPrice = cursor.getString(17);
@@ -164,7 +187,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                         body.put("cgst", CGST );
                         body.put("Puchase_date", PurchaseDate );
                         body.put("puchase_remark", REMARK );
-                        body.put("stock_in", TotalItem );
+                        body.put("stock_in", StockIn );
                         body.put("Invoice_number", InvoiceNo );
                         body.put("Invoice_date", InvoiceDate );
                         body.put("unit_price", UnitPrice );

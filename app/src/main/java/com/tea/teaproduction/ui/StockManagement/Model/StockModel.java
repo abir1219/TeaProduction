@@ -9,32 +9,32 @@ public class StockModel {
 
     public StockModel(int stockId, String itemId,String ItemName, String itemCategoryId, String companyId, String itemRate, String SGST, String CGST, String IGST, String itemTotal, String purchaseDate, String purchaseRemark,
                       String stockIn, String dispatchDate, String dispatchRemark, String stockOut, String invoiceNumber, String invoiceDate, String unitPrice, String customPrice1, String custompriceValue1, String customPrice2, String custompriceValue2, String customPrice3, String custompriceValue3, String available) {
-        StockId = stockId;
-        ItemName = ItemName;
-        ItemId = itemId;
-        ItemCategoryId = itemCategoryId;
-        CompanyId = companyId;
-        ItemRate = itemRate;
+        this.StockId = stockId;
+        this.ItemName = ItemName;
+        this.ItemId = itemId;
+        this.ItemCategoryId = itemCategoryId;
+        this.CompanyId = companyId;
+        this.ItemRate = itemRate;
         this.SGST = SGST;
         this.CGST = CGST;
         this.IGST = IGST;
-        ItemTotal = itemTotal;
-        PurchaseDate = purchaseDate;
-        PurchaseRemark = purchaseRemark;
-        StockIn = stockIn;
-        DispatchDate = dispatchDate;
-        DispatchRemark = dispatchRemark;
-        StockOut = stockOut;
-        InvoiceNumber = invoiceNumber;
-        InvoiceDate = invoiceDate;
-        UnitPrice = unitPrice;
-        CustomPrice1 = customPrice1;
-        CustompriceValue1 = custompriceValue1;
-        CustomPrice2 = customPrice2;
-        CustompriceValue2 = custompriceValue2;
-        CustomPrice3 = customPrice3;
-        CustompriceValue3 = custompriceValue3;
-        Available = available;
+        this.ItemTotal = itemTotal;
+        this.PurchaseDate = purchaseDate;
+        this.PurchaseRemark = purchaseRemark;
+        this.StockIn = stockIn;
+        this.DispatchDate = dispatchDate;
+        this.DispatchRemark = dispatchRemark;
+        this.StockOut = stockOut;
+        this.InvoiceNumber = invoiceNumber;
+        this.InvoiceDate = invoiceDate;
+        this.UnitPrice = unitPrice;
+        this.CustomPrice1 = customPrice1;
+        this.CustompriceValue1 = custompriceValue1;
+        this.CustomPrice2 = customPrice2;
+        this.CustompriceValue2 = custompriceValue2;
+        this.CustomPrice3 = customPrice3;
+        this.CustompriceValue3 = custompriceValue3;
+        this.Available = available;
     }
 
     public int getStockId() {

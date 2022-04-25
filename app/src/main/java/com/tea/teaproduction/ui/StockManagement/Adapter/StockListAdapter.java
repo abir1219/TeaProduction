@@ -20,7 +20,6 @@ import java.util.List;
 public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.ViewHolder> {
     List<StockModel> modelList;
     Context context;
-    DbHelper dbHelper;
 
     public StockListAdapter(List<StockModel> modelList, Context context) {
         this.modelList = modelList;
@@ -43,6 +42,10 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.View
                 Log.d("ItemName : ",cursor.getString(1));
             }
         }*/
+        Log.d("ADAPTER_ITEM_NAME",modelList.get(position).getItemName());
+        Log.d("ADAPTER_AVAILABLE",modelList.get(position).getAvailable());
+        Log.d("ADAPTER_ITEM_STOCKIN",modelList.get(position).getStockIn());
+        Log.d("ADAPTER_ITEM_STOCKOUT",modelList.get(position).getStockOut());
 
         holder.tvItemName.setText(modelList.get(position).getItemName());
 

@@ -79,10 +79,10 @@ public class DbHelper extends SQLiteOpenHelper {
                         " ItemTotal text DEFAULT NULL," +
                         " PurchaseDate text DEFAULT NULL," +
                         " PurchaseRemark text," +
-                        " StockIn text DEFAULT NULL," +
+                        " StockIn text DEFAULT 0," +
                         " DispatchDate text DEFAULT NULL," +
                         " DispatchRemark text," +
-                        " StockOut text DEFAULT NULL," +
+                        " StockOut text DEFAULT 0," +
                         " InvoiceNumber text DEFAULT NULL," +
                         " InvoiceDate text DEFAULT NULL," +
                         " UnitPrice text DEFAULT NULL," +
@@ -520,20 +520,21 @@ public class DbHelper extends SQLiteOpenHelper {
                             break;
                         }
                     } else {
-                        /*String newStockIn = String.valueOf(Integer.parseInt(cursor.getString(11)) - result);
-                        String newStockOut = String.valueOf(result);
-                        SQLiteDatabase database = this.getWritableDatabase();
+                        /*
                         *//*contentValues.put("StockIn", newStockIn);
                         contentValues.put("Available", "No");
                         contentValues.put("StockOut", newStockOut);
                         contentValues.put("DispatchDate", despatch_date);
                         contentValues.put("DispatchRemark", DispatchRemark);*//*
-                        //database.update("stock", contentValues, "StockId = ?", new String[]{stockId});
+                        //database.update("stock", contentValues, "StockId = ?", new String[]{stockId});*/
+                        String newStockIn = String.valueOf(Integer.parseInt(cursor.getString(11)) - demandDispatchCount);
+                        String newStockOut = String.valueOf(demandDispatchCount);
+                        SQLiteDatabase database = this.getWritableDatabase();
                         String sql = "UPDATE stock SET StockIn = " + "'" + newStockIn + "'" + ",StockOut = " + "'" + newStockOut + "'" +
                                 ",Available = 'Yes',DispatchDate=" + "'" + despatch_date + "'" + "," +
                                 "DispatchRemark=" + "'" + DispatchRemark + "'" + " WHERE StockId = " + "'" + stockId + "'";
                         Log.d("SQL_RES", sql);
-                        database.execSQL(sql);*/
+                        database.execSQL(sql);
                     }
                     db.close();
                 } while (cursor.moveToNext());
