@@ -1,13 +1,4 @@
-/*
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    id 'com.android.application' version '7.1.3' apply false
-    id 'com.android.library' version '7.1.3' apply false
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}*/
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
@@ -16,7 +7,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.4"
+        classpath 'com.android.tools.build:gradle:7.1.3'
         classpath 'com.google.gms:google-services:4.3.10'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -27,8 +18,6 @@ buildscript {
         repositories {
             google()
             mavenCentral()
-            maven { url "https://jitpack.io" }
-            maven { url 'https://maven.google.com' }
         }
     }
 

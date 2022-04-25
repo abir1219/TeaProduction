@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -41,12 +42,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
 public class SplashScreenActivity extends AppCompatActivity implements ConnectionReceiver.ReceiverListener {
+    private static final String INIT_VECTOR = "encryptionIntVec";
+    private String SECRET_KEY = "aesEncryptionKey";
     ActivitySplashScreenBinding binding;
     Animation animation;
     Handler mHandler;
@@ -86,22 +104,22 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
     }
 
 
-        private void redirect() {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(YoDB.getPref().read(Constants.ID,"").isEmpty()){
-                        intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
-                        overridePendingTransition(R.anim.fade_in_animation, R.anim.fade_out_animation);
-                        startActivity(intent);
-                        finish();
-                    }else{
-                        intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-                        overridePendingTransition(R.anim.fade_in_animation, R.anim.fade_out_animation);
-                        startActivity(intent);
-                    }
+    private void redirect() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (YoDB.getPref().read(Constants.ID, "").isEmpty()) {
+                    intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+                    overridePendingTransition(R.anim.fade_in_animation, R.anim.fade_out_animation);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                    overridePendingTransition(R.anim.fade_in_animation, R.anim.fade_out_animation);
+                    startActivity(intent);
                 }
-            },4000);
+            }
+        }, 5000);
     }
 
     public boolean checkInternet() {
@@ -137,7 +155,76 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
             loadCompanyListFromServer();
             loadCategoryListFromServer();
             loadItemListFromServer();
+            insertUser();
         }
+    }
+
+    private void insertUser() {
+        StringRequest sr = new StringRequest(Request.Method.POST, Urls.USER_LIST, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    Log.e("LOGIN_RES",jsonObject.toString());
+                    JSONArray array = jsonObject.getJSONArray("result");
+
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject object = array.getJSONObject(i);
+                        String userId = object.getString("UserId");
+                        String UserName = object.getString("UserName");
+
+
+                        //String strResult=decryptMsg(object.getString("Password"),secretKey);
+                        String Password;
+                        try{
+                            Password = decrypt(object.getString("Password"));
+                            Log.d("DECRYPT_PW",Password);
+                            String role = object.getString("RoleDisplayName");
+
+                            dbHelper.insertUser(userId,role,UserName,Password);
+                        }catch (Exception e){
+                            Log.d("DECRYPT_MSG",e.getMessage());
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        Volley.newRequestQueue(SplashScreenActivity.this).add(sr);
+    }
+
+    private String decrypt(String password) throws Exception {
+        SecretKey key = generateKey(password);
+        String decrypt = "";
+        try {
+            Cipher c = Cipher.getInstance("AES");
+            c.init(Cipher.DECRYPT_MODE,key);
+            byte[] decodeValue = Base64.decode("",Base64.DEFAULT);
+            byte[] decValue = c.doFinal(decodeValue);
+            decrypt = new String(decValue);
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
+        return decrypt;
+    }
+
+    private SecretKey generateKey(String password) throws Exception{
+        final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] bytes = password.getBytes("UTF-8");
+        digest.update(bytes,0, bytes.length);
+        byte[] key = digest.digest();
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key,"AES");
+        return secretKeySpec;
     }
 
 
@@ -164,6 +251,8 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                 String CustomPrice3 = cursor.getString(22);
                 String CustomValue3 = cursor.getString(23);
 
+                //login(ItemId,ItemCatID,CompanyID);
+
                 StringRequest sr = new StringRequest(Request.Method.POST, Urls.PURCHASE_STOCK, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -179,30 +268,33 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> body = new HashMap<>();
-                        body.put("Item_id", ItemId );
-                        body.put("Item_category_id", ItemCatID );
-                        body.put("Company_id", CompanyID );
-                        body.put("sgst", SGST );
-                        body.put("igst", IGST );
-                        body.put("cgst", CGST );
-                        body.put("Puchase_date", PurchaseDate );
-                        body.put("puchase_remark", REMARK );
-                        body.put("stock_in", StockIn );
-                        body.put("Invoice_number", InvoiceNo );
-                        body.put("Invoice_date", InvoiceDate );
-                        body.put("unit_price", UnitPrice );
+                        body.put("Item_id", ItemId);
+                        body.put("Item_category_id", ItemCatID);
+                        body.put("Company_id", CompanyID);
+                        body.put("sgst", SGST);
+                        body.put("igst", IGST);
+                        body.put("cgst", CGST);
+                        body.put("Puchase_date", PurchaseDate);
+                        body.put("puchase_remark", REMARK);
+                        body.put("stock_in", StockIn);
+                        body.put("Invoice_number", InvoiceNo);
+                        body.put("Invoice_date", InvoiceDate);
+                        body.put("unit_price", UnitPrice);
                         body.put("custom_price1", CustomPrice1);
                         body.put("custom_value1", CustomValue1);
-                        body.put("custom_price2", CustomPrice2 );
-                        body.put("custom_value2", CustomValue2 );
-                        body.put("custom_price3", CustomPrice3 );
-                        body.put("custom_value3", CustomValue3 );
+                        body.put("custom_price2", CustomPrice2);
+                        body.put("custom_value2", CustomValue2);
+                        body.put("custom_price3", CustomPrice3);
+                        body.put("custom_value3", CustomValue3);
                         return body;
                     }
                 };
                 Volley.newRequestQueue(SplashScreenActivity.this).add(sr);
             }
         }
+    }
+
+    private void login() {
     }
 
     private void loadCompanyListFromServer() {

@@ -21,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tea.teaproduction.Helper.DbHelper;
 import com.tea.teaproduction.MainActivity;
 import com.tea.teaproduction.Model.SectorModel;
@@ -52,11 +53,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     String empId = "";
 
     @Override
+    public void onResume() {
+        super.onResume();
+        BottomNavigationView navigationView = getActivity().findViewById(R.id.bottom_nav);
+        try{
+            navigationView.setVisibility(View.VISIBLE);
+        }catch (Exception e){}
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-
+        BottomNavigationView navigationView = getActivity().findViewById(R.id.bottom_nav);
+        try{
+            navigationView.setVisibility(View.VISIBLE);
+        }catch (Exception e){}
         BtnClick();
         dbHelper = new DbHelper(getActivity());
         loadCategorySpinner();

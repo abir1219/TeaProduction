@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tea.teaproduction.Helper.DbHelper;
 import com.tea.teaproduction.MainActivity;
 import com.tea.teaproduction.Model.CategoryListModel;
@@ -47,10 +48,25 @@ public class StockInFragment extends Fragment implements View.OnClickListener {
     Calendar calendar;
 
     @Override
+    public void onResume() {
+        super.onResume();
+        BottomNavigationView navigationView = getActivity().findViewById(R.id.bottom_nav);
+        try {
+            navigationView.setVisibility(View.GONE);
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentStockInBinding.inflate(inflater, container, false);
+        BottomNavigationView navigationView = getActivity().findViewById(R.id.bottom_nav);
+        try {
+            navigationView.setVisibility(View.GONE);
+        } catch (Exception e) {
+        }
         btnClick();
         dbHelper = new DbHelper(getActivity());
         loadCompanySpinner();

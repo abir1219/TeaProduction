@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -20,7 +21,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 
+import com.tea.teaproduction.Activity.LoginActivity;
 import com.tea.teaproduction.Adapter.DrawerAdapter;
+import com.tea.teaproduction.Helper.ManageLoginData;
 import com.tea.teaproduction.Model.DrawerModel;
 import com.tea.teaproduction.databinding.ActivityMainBinding;
 import com.tea.teaproduction.utils.ConnectionReceiver;
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity{
         modelList.add(new DrawerModel(R.drawable.ic_baseline_home_24, "Stock In"));
         modelList.add(new DrawerModel(R.drawable.ic_baseline_home_24, "Stock Out"));
         modelList.add(new DrawerModel(R.drawable.ic_baseline_home_24, "Stock List"));
+        modelList.add(new DrawerModel(R.drawable.ic_baseline_home_24, "Logout"));
 
         DrawerAdapter drawerMenuAdapter = new DrawerAdapter(modelList, this);
         binding.rvMenu.setAdapter(drawerMenuAdapter);
@@ -112,11 +116,19 @@ public class MainActivity extends AppCompatActivity{
                         navController.navigate(R.id.nav_stock_List, bundle, navBuilder.build());//This will open
                         openDrawer();
                         break;
+                    case 4:
+                        logout();
+                        break;
                 }
             }
         });
 
 
+    }
+
+    private void logout() {
+        ManageLoginData.clearLoginData();
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
 
     public void openDrawer() {

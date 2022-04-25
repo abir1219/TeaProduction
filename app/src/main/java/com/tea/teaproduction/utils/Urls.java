@@ -94,4 +94,10 @@ public class Urls {
     @Parameter : username ,password
      */
     public static final String LOGIN = BASE_URL + "user_login";
+
+    /*
+    @Function : user_list
+    @Method : POST
+     */
+    public static final String USER_LIST = BASE_URL + "user_list";
 }

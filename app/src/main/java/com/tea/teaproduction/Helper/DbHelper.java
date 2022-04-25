@@ -32,6 +32,9 @@ public class DbHelper extends SQLiteOpenHelper {
                         "(GeadeCategoryId TEXT PRIMARY KEY, GeadeCategoryName TEXT)"
         );
 
+        db.execSQL("create table user "+
+                "(userId text PRIMARY KEY,role text,username text, password text)");
+
         db.execSQL(
                 "create table shift " +
                         "(ShiftId TEXT PRIMARY KEY, ShiftName TEXT)"
@@ -117,6 +120,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS itemCategory");
         db.execSQL("DROP TABLE IF EXISTS itemList");
         db.execSQL("DROP TABLE IF EXISTS stock");
+        db.execSQL("DROP TABLE IF EXISTS user");
         onCreate(db);
     }
 
@@ -155,6 +159,38 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insertUser(String userId,String role,String username,String password){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("userId",userId);
+        contentValues.put("role",role);
+        contentValues.put("username",username);
+        contentValues.put("password",password);
+
+        long result = db.insert("user", null, contentValues);
+
+        db.close();
+        System.out.println("RESULT: "+result);
+        if (result == -1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    //userId text PRIMARY KEY,role text,username text, password text
+
+    public Cursor login(String username,String password){
+        System.out.println("Username: "+username+", password: "+password);
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql = "select * from user where username = "+"'"+username+"'"+" and password = "+"'"+password+"'";
+        System.out.println("LOGIN_SQL: "+sql);
+        Cursor cursor = db.rawQuery(sql,null);
+        if(cursor.getCount() > 0)
+            return cursor;
+        else
+            return null;
+
+    }
 
     public boolean insertShift(String ShiftId, String ShiftName) {
         SQLiteDatabase db = this.getWritableDatabase();
