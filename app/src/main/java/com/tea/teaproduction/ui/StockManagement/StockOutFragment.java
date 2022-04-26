@@ -175,7 +175,7 @@ public class StockOutFragment extends Fragment implements View.OnClickListener {
         if(result){
             Toast.makeText(getActivity(), "Successfully Dispatched", Toast.LENGTH_SHORT).show();
             //itemId = "";
-            binding.tieItem.setText("");
+            //binding.tieItem.setText("");
             binding.tieTotalItem.setText("");
             binding.tieRemark.setText("");
         }else{
