@@ -1,6 +1,10 @@
 package com.tea.teaproduction.ui.Home;
 
+import android.app.Dialog;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -13,6 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -51,6 +58,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     ArrayAdapter<String> shiftAdapter;
     ArrayAdapter<String> sectorAdapter;
     String empId = "";
+    Dialog dialog;
 
     @Override
     public void onResume() {
@@ -239,26 +247,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 empId = cursor.getString(0);
             }
         }
-        /*StringRequest sr = new StringRequest(Request.Method.POST, Urls.GET_EMPLOYEE, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                JSONObject object = new
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }){
-            @Nullable
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> body = new HashMap<>();
-                body.put("emp_code",binding.tieEmpCode.getText().toString());
-                return body;
-            }
-        };
-        Volley.newRequestQueue(getActivity()).add(sr);*/
     }
 
     private void BtnClick() {
@@ -277,26 +265,107 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.tieCategory:
                 //Toast.makeText(getActivity(), "Category Clicked", Toast.LENGTH_SHORT).show();
-                binding.spCategory.performClick();
+                /*binding.spCategory.performClick();
                 binding.tieCategory.setText("");
-                binding.spCategory.setVisibility(View.VISIBLE);
+                binding.spCategory.setVisibility(View.VISIBLE);*/
+
+                setDialogLayout("Category");
+
+
+
                 break;
             case R.id.tieShift:
                 //Toast.makeText(getActivity(), "Category Clicked", Toast.LENGTH_SHORT).show();
-                binding.spShift.performClick();
+               /* binding.spShift.performClick();
                 binding.tieShift.setText("");
-                binding.spShift.setVisibility(View.VISIBLE);
+                binding.spShift.setVisibility(View.VISIBLE);*/
+                setDialogLayout("Shift");
                 break;
             case R.id.tieSector:
                 //Toast.makeText(getActivity(), "Category Clicked", Toast.LENGTH_SHORT).show();
-                binding.spSector.performClick();
+                /*binding.spSector.performClick();
                 binding.tieSector.setText("");
-                binding.spSector.setVisibility(View.VISIBLE);
+                binding.spSector.setVisibility(View.VISIBLE);*/
+
+                setDialogLayout("Sector");
                 break;
             case R.id.llMenu:
                 ((MainActivity) getActivity()).openDrawer();
                 break;
         }
+    }
+
+    private void setDialogLayout(String type) {
+        dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_searchable_spinner);
+        dialog.getWindow().setLayout(800,1200);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+        TextView tvTitle = dialog.findViewById(R.id.tvTitle);
+        EditText etSearch = dialog.findViewById(R.id.etSearch);
+        ListView listView = dialog.findViewById(R.id.listView);
+
+        if(type.equalsIgnoreCase("Category")){
+            tvTitle.setText("Select Category");
+            categoryAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, categoryList);
+            //categoryAdapter.setDropDownViewResource(R.layout.spinner_list);
+            listView.setAdapter(categoryAdapter);
+        }else if(type.equalsIgnoreCase("Shift")){
+            tvTitle.setText("Select Shift");
+            shiftAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, shiftList);
+            //categoryAdapter.setDropDownViewResource(R.layout.spinner_list);
+            listView.setAdapter(shiftAdapter);
+        }else if(type.equalsIgnoreCase("Sector")){
+            tvTitle.setText("Select Sector");
+            sectorAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, sectorList);
+            //categoryAdapter.setDropDownViewResource(R.layout.spinner_list);
+            listView.setAdapter(sectorAdapter);
+        }
+//Shift,Sector
+       etSearch.addTextChangedListener(new TextWatcher() {
+           @Override
+           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+           }
+
+           @Override
+           public void onTextChanged(CharSequence s, int start, int before, int count) {
+               if(type.equalsIgnoreCase("Category")){
+                   categoryAdapter.getFilter().filter(s);
+               }else if(type.equalsIgnoreCase("Shift")){
+                   shiftAdapter.getFilter().filter(s);
+               }else if(type.equalsIgnoreCase("Sector")){
+                   sectorAdapter.getFilter().filter(s);
+               }
+           }
+
+           @Override
+           public void afterTextChanged(Editable s) {
+
+           }
+       });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(type.equalsIgnoreCase("Category")){
+                    if(!categoryAdapter.getItem(position).equalsIgnoreCase("Select Category")){
+                        binding.tilCategory.getEditText().setText(categoryAdapter.getItem(position));
+                    }
+                }else if(type.equalsIgnoreCase("Category")){
+                    if(!shiftAdapter.getItem(position).equalsIgnoreCase("Select Shift")){
+                        binding.tilShift.getEditText().setText(shiftAdapter.getItem(position));
+                    }
+                }else if(type.equalsIgnoreCase("Category")){
+                    if(!sectorAdapter.getItem(position).equalsIgnoreCase("Select Sector")){
+                        binding.tilSector.getEditText().setText(sectorAdapter.getItem(position));
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
+
     }
 
     private void checkDetails() {
@@ -308,9 +377,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             Toast.makeText(getActivity(), "Saved Successfully", Toast.LENGTH_SHORT).show();
             empId = "";
             binding.tieEmpCode.setText("");
-            binding.tieCategory.setText("");
+            /*binding.tieCategory.setText("");
             binding.tieShift.setText("");
-            binding.tieSector.setText("");
+            binding.tieSector.setText("");*/
             binding.tieWeight.setText("");
 
         }else{

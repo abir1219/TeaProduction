@@ -161,7 +161,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
 
 
     private void loadStockFromServer() {
-        Toast.makeText(this, "loadStock", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "loadStock", Toast.LENGTH_SHORT).show();
         StringRequest sr = new StringRequest(Request.Method.POST, Urls.STOCK_LIST, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -291,6 +291,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
 
     private void loadStockFromLocalToServer() {
         Cursor cursor = dbHelper.getStockDetails();
+        //Log.d("STOCK_COUNT","Count: "+cursor.getCount());
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String ItemId = cursor.getString(1);

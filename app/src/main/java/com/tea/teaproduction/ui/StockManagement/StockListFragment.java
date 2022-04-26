@@ -44,7 +44,6 @@ public class StockListFragment extends Fragment implements View.OnClickListener{
     }
 
     private void loadStockList() {
-        modelList = new ArrayList<>();
         Cursor cursor = dbHelper.getStockDetails();
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
@@ -56,6 +55,7 @@ public class StockListFragment extends Fragment implements View.OnClickListener{
                     }
                 }
 
+                modelList = new ArrayList<>();
                 Log.d("ITEM_NAME_RES",itemName);
 
                 modelList.add(new StockModel(cursor.getInt(0), cursor.getString(1), itemName, cursor.getString(2),

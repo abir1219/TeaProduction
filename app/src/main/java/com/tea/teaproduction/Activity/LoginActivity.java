@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void login() {
-        Toast.makeText(LoginActivity.this,"login",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(LoginActivity.this,"login",Toast.LENGTH_SHORT).show();
         String username = binding.tilPhone.getEditText().getText().toString();
         String password = binding.tilPassword.getEditText().getText().toString();
 
