@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.Home.HomeFragment">
 
     <RelativeLayout
@@ -13,35 +13,37 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/rlTop"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/baseColor">
-
-        <LinearLayout
-            android:id="@+id/llMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="10dp"
-            android:paddingRight="20dp">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_menu"
-                app:tint="@color/white" />
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
-        <androidx.core.widget.NestedScrollView
+        <RelativeLayout
+            android:id="@+id/rlTop"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:background="@color/baseColor">
+
+            <LinearLayout
+                android:id="@+id/llMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="20dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_menu"
+                    app:tint="@color/white" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_below="@+id/rlTop"
+            android:isScrollContainer="true"
+            app:layout_constraintBottom_toTopOf="@+id/bottomContainer"
             android:fillViewport="true">
 
             <RelativeLayout
@@ -82,8 +84,8 @@
                     android:id="@+id/tilEmpName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:layout_below="@+id/tilEmpCode"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/edit_text_background"
                     android:textColorHint="@color/black"
                     app:errorEnabled="false"
@@ -108,11 +110,11 @@
                     android:id="@+id/tilSector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_below="@+id/tilEmpName"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edit_text_background"
                     android:textColorHint="@color/black4"
                     app:errorEnabled="false"
-                    android:background="@drawable/edit_text_background"
                     app:errorTextColor="@color/black"
                     app:hintTextColor="@color/black4">
 
@@ -136,10 +138,10 @@
                         android:id="@+id/tieSector"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/edit_text_background"
                         android:drawableEnd="@drawable/ic_arrow_drop_down"
                         android:focusable="false"
                         android:hint="Select Sector"
-                        android:background="@drawable/edit_text_background"
                         android:imeOptions="actionNext"
                         android:inputType="text"
                         android:maxLines="1"
@@ -163,10 +165,10 @@
                     android:id="@+id/tilCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_below="@+id/tilSector"
-                    android:textColorHint="@color/black4"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/edit_text_background"
+                    android:textColorHint="@color/black4"
                     app:errorTextColor="@color/black"
                     app:hintTextColor="@color/black4">
 
@@ -190,10 +192,10 @@
                         android:id="@+id/tieCategory"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/edit_text_background"
                         android:drawableEnd="@drawable/ic_arrow_drop_down"
                         android:focusable="false"
                         android:hint="Select Particular Category"
-                        android:background="@drawable/edit_text_background"
                         android:imeOptions="actionNext"
                         android:inputType="text"
                         android:maxLines="1"
@@ -217,11 +219,11 @@
                     android:id="@+id/tilShift"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_below="@+id/tilCategory"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edit_text_background"
                     android:textColorHint="@color/black4"
                     app:errorEnabled="false"
-                    android:background="@drawable/edit_text_background"
                     app:errorTextColor="@color/black"
                     app:hintTextColor="@color/black4">
 
@@ -245,10 +247,10 @@
                         android:id="@+id/tieShift"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/edit_text_background"
                         android:drawableEnd="@drawable/ic_arrow_drop_down"
                         android:focusable="false"
                         android:hint="Select Shift"
-                        android:background="@drawable/edit_text_background"
                         android:imeOptions="actionNext"
                         android:inputType="text"
                         android:maxLines="1"
@@ -272,8 +274,8 @@
                     android:id="@+id/tilWeight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:layout_below="@+id/tilShift"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/edit_text_background"
                     android:textColorHint="@color/black"
                     app:errorEnabled="false"
@@ -295,23 +297,34 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
 
-                <TextView
-                    android:id="@+id/tvSave"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:layout_below="@+id/tilWeight"
-                    android:text="Save"
-                    android:textColor="@color/baseColor"
-                    android:textSize="17sp" />
-
-
             </RelativeLayout>
 
-        </androidx.core.widget.NestedScrollView>
+        </ScrollView>
 
+        <LinearLayout
+            android:id="@+id/bottomContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <TextView
+                android:id="@+id/tvSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/btn_nav_background1"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="Save"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
