@@ -393,8 +393,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public boolean addStock(String ItemId, String ItemCatID, String CompanyID, String SGST, String CGST, String IGST,
                             String PurchaseDate, String REMARK, String InvoiceNo, String InvoiceDate,
                             String UnitPrice, String CustomPrice1, String CustomValue1, String CustomPrice2,
-                            String CustomValue2, String CustomPrice3, String CustomValue3, String StockIn,String StockOut,
-                            String DispatchDate,String DispatchRemark,String Available) {
+                            String CustomValue2, String CustomPrice3, String CustomValue3, String StockIn, String StockOut,
+                            String DispatchDate, String DispatchRemark, String Available) {
 
 
         Double rate = Double.parseDouble(UnitPrice) * Double.parseDouble(StockIn);
@@ -464,33 +464,33 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE stock");
 
         db.execSQL("CREATE TABLE stock (" +
-                        " StockId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-                        " ItemId text DEFAULT NULL," +
-                        " ItemCategoryId text DEFAULT NULL," +
-                        " CompanyId text DEFAULT NULL," +
-                        " ItemRate text DEFAULT NULL," +
-                        " SGST text DEFAULT NULL," +
-                        " CGST text DEFAULT NULL," +
-                        " IGST text DEFAULT NULL," +
-                        " ItemTotal text DEFAULT NULL," +
-                        " PurchaseDate text DEFAULT NULL," +
-                        " PurchaseRemark text," +
-                        " StockIn text DEFAULT 0," +
-                        " DispatchDate text DEFAULT NULL," +
-                        " DispatchRemark text," +
-                        " StockOut text DEFAULT 0," +
-                        " InvoiceNumber text DEFAULT NULL," +
-                        " InvoiceDate text DEFAULT NULL," +
-                        " UnitPrice text DEFAULT NULL," +
-                        " CustomPrice1 text DEFAULT NULL," +
-                        " CustompriceValue1 text DEFAULT NULL," +
-                        " CustomPrice2 text DEFAULT NULL," +
-                        " CustompriceValue2 text DEFAULT NULL," +
-                        " CustomPrice3 text DEFAULT NULL," +
-                        " CustompriceValue3 text DEFAULT NULL," +
-                        " Available CHECK( Available IN ('Yes','No')) DEFAULT 'Yes'," +
-                        " CreatedOn timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                        " ModifiedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP) "
+                " StockId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                " ItemId text DEFAULT NULL," +
+                " ItemCategoryId text DEFAULT NULL," +
+                " CompanyId text DEFAULT NULL," +
+                " ItemRate text DEFAULT NULL," +
+                " SGST text DEFAULT NULL," +
+                " CGST text DEFAULT NULL," +
+                " IGST text DEFAULT NULL," +
+                " ItemTotal text DEFAULT NULL," +
+                " PurchaseDate text DEFAULT NULL," +
+                " PurchaseRemark text," +
+                " StockIn text DEFAULT 0," +
+                " DispatchDate text DEFAULT NULL," +
+                " DispatchRemark text," +
+                " StockOut text DEFAULT 0," +
+                " InvoiceNumber text DEFAULT NULL," +
+                " InvoiceDate text DEFAULT NULL," +
+                " UnitPrice text DEFAULT NULL," +
+                " CustomPrice1 text DEFAULT NULL," +
+                " CustompriceValue1 text DEFAULT NULL," +
+                " CustomPrice2 text DEFAULT NULL," +
+                " CustompriceValue2 text DEFAULT NULL," +
+                " CustomPrice3 text DEFAULT NULL," +
+                " CustompriceValue3 text DEFAULT NULL," +
+                " Available CHECK( Available IN ('Yes','No')) DEFAULT 'Yes'," +
+                " CreatedOn timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                " ModifiedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP) "
         );
     }
 
@@ -585,7 +585,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public Cursor getSingleEmployee(String empCode) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("Select * from employee where EmpCode = ?", new String[]{empCode});
+        Cursor cursor = db.rawQuery("Select * from employee where EmpCode LIKE '%" + empCode + "%'", null);
         if (cursor.getCount() > 0) {
             return cursor;
         } else {

@@ -1,11 +1,16 @@
 package com.tea.teaproduction.ui.StockManagement;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +19,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -46,6 +54,7 @@ public class StockInFragment extends Fragment implements View.OnClickListener {
     String categoryId = "";
     String companyId = "";
     Calendar calendar;
+    Dialog dialog;
 
     @Override
     public void onResume() {
@@ -233,19 +242,24 @@ public class StockInFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.tieCompany:
                 //Toast.makeText(getActivity(), "Company", Toast.LENGTH_SHORT).show();
-                binding.spCompany.performClick();
+                /*binding.spCompany.performClick();
                 binding.tieCompany.setText("");
-                binding.spCompany.setVisibility(View.VISIBLE);
+                binding.spCompany.setVisibility(View.VISIBLE);*/
+                setDialogLayout("Company");
+
                 break;
             case R.id.tieCategory:
-                binding.spCategory.performClick();
+                /*binding.spCategory.performClick();
                 binding.tieCategory.setText("");
-                binding.spCategory.setVisibility(View.VISIBLE);
+                binding.spCategory.setVisibility(View.VISIBLE);*/
+
+                setDialogLayout("Category");
                 break;
             case R.id.tieItem:
-                binding.spItem.performClick();
+                /*binding.spItem.performClick();
                 binding.tieItem.setText("");
-                binding.spItem.setVisibility(View.VISIBLE);
+                binding.spItem.setVisibility(View.VISIBLE);*/
+                setDialogLayout("Item");
                 break;
             case R.id.tieInvoiceDate:
                 calendar = Calendar.getInstance();
@@ -284,9 +298,9 @@ public class StockInFragment extends Fragment implements View.OnClickListener {
             /*itemId = "";
             categoryId = "";
             companyId = "";*/
-            binding.tieCategory.setText("");
-            binding.tieCompany.setText("");
-            binding.tieItem.setText("");
+            //binding.tieCategory.setText("");
+            //binding.tieCompany.setText("");
+            //binding.tieItem.setText("");
             binding.tieSgst.setText("");
             binding.tieCgst.setText("");
             binding.tieIgst.setText("");
@@ -323,4 +337,77 @@ public class StockInFragment extends Fragment implements View.OnClickListener {
         }
 
     };
+    //Company,Category,Item
+    private void setDialogLayout(String type) {
+        dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_searchable_spinner);
+        dialog.getWindow().setLayout(800,1200);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+        TextView tvTitle = dialog.findViewById(R.id.tvTitle);
+        EditText etSearch = dialog.findViewById(R.id.etSearch);
+        ListView listView = dialog.findViewById(R.id.listView);
+
+        if(type.equalsIgnoreCase("Company")){
+            tvTitle.setText("Select Company");
+            companyAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, companyList);
+            //categoryAdapter.setDropDownViewResource(R.layout.spinner_list);
+            listView.setAdapter(companyAdapter);
+        }else if(type.equalsIgnoreCase("Category")){
+            tvTitle.setText("Select Category");
+            categoryAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, categoryList);
+            //categoryAdapter.setDropDownViewResource(R.layout.spinner_list);
+            listView.setAdapter(categoryAdapter);
+        }else if(type.equalsIgnoreCase("Item")){
+            tvTitle.setText("Select Item");
+            itemAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, itemList);
+            //categoryAdapter.setDropDownViewResource(R.layout.spinner_list);
+            listView.setAdapter(itemAdapter);
+        }
+
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(type.equalsIgnoreCase("Company")){
+                    companyAdapter.getFilter().filter(s);
+                }else if(type.equalsIgnoreCase("Category")){
+                    categoryAdapter.getFilter().filter(s);
+                }else if(type.equalsIgnoreCase("Item")){
+                    itemAdapter.getFilter().filter(s);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(type.equalsIgnoreCase("Company")){
+                    if(!companyAdapter.getItem(position).equalsIgnoreCase("Select Company")){
+                        binding.tilCompany.getEditText().setText(companyAdapter.getItem(position));
+                    }
+                }else if(type.equalsIgnoreCase("Category")){
+                    if(!categoryAdapter.getItem(position).equalsIgnoreCase("Select Category")){
+                        binding.tilCategory.getEditText().setText(categoryAdapter.getItem(position));
+                    }
+                }else if(type.equalsIgnoreCase("Item")){
+                    if(!itemAdapter.getItem(position).equalsIgnoreCase("Select Item")){
+                        binding.tilItem.getEditText().setText(itemAdapter.getItem(position));
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
+
+    }
 }

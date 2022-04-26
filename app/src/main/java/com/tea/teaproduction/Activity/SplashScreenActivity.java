@@ -34,6 +34,7 @@ import com.tea.teaproduction.Model.ShiftModel;
 import com.tea.teaproduction.R;
 import com.tea.teaproduction.databinding.ActivitySplashScreenBinding;
 import com.tea.teaproduction.Model.CategoryModel;
+import com.tea.teaproduction.ui.Home.EmployeeModel;
 import com.tea.teaproduction.utils.ConnectionReceiver;
 import com.tea.teaproduction.utils.Constants;
 import com.tea.teaproduction.utils.Urls;
@@ -71,6 +72,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
     Intent intent;
 
     DbHelper dbHelper;
+    List<EmployeeModel> employeeModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -567,6 +569,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                         String EmpCode = object.getString("EmpCode");
 
                         Cursor cursor = dbHelper.getAllEmployee();
+                        employeeModel = new ArrayList<>();
                         if (cursor != null && cursor.getCount() > 0) {
                             //Toast.makeText(SplashScreenActivity.this, "have", Toast.LENGTH_SHORT).show();
                             while (cursor.moveToNext()) {

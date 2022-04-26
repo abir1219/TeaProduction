@@ -54,11 +54,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     List<String> categoryList;
     List<String> shiftList;
     List<String> sectorList;
+    List<String> employeeList;
     ArrayAdapter<String> categoryAdapter;
     ArrayAdapter<String> shiftAdapter;
     ArrayAdapter<String> sectorAdapter;
+    ArrayAdapter<String> employeeAdapter;
     String empId = "";
     Dialog dialog;
+    List<EmployeeModel> employeeModelList;
 
     @Override
     public void onResume() {
@@ -91,7 +94,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (binding.tilEmpCode.getEditText().length() == 10) {
+                if (binding.tilEmpCode.getEditText().length() >= 4) {
                     getEmployeeDetailsByEmpCode();
                 }
             }
@@ -240,11 +243,33 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
     private void getEmployeeDetailsByEmpCode() {
+        employeeModelList = new ArrayList<>();
+        employeeList = new ArrayList<>();
         Cursor cursor = dbHelper.getSingleEmployee(binding.tilEmpCode.getEditText().getText().toString());
         if (cursor != null && cursor.getCount() > 0) {
+            binding.lvEmpName.setVisibility(View.VISIBLE);
             while (cursor.moveToNext()) {
-                binding.tilEmpName.getEditText().setText(cursor.getString(2));
-                empId = cursor.getString(0);
+                /*binding.tilEmpName.getEditText().setText(cursor.getString(2));
+                empId = cursor.getString(0);*/
+                employeeModelList.add(new EmployeeModel(cursor.getString(0),cursor.getString(1),cursor.getString(2)));
+
+                //employeeList.add("Select Employee Name");
+                for (int i = 0; i < employeeModelList.size(); i++) {
+                    employeeList.add(employeeModelList.get(i).getEmpName());
+                }
+                employeeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, employeeList);
+                employeeAdapter.setDropDownViewResource(R.layout.spinner_list);
+
+                binding.lvEmpName.setAdapter(employeeAdapter);
+
+                binding.lvEmpName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        binding.tilEmpName.getEditText().setText(employeeAdapter.getItem(position));
+                        binding.lvEmpName.setVisibility(View.GONE);
+                    }
+                });
+
             }
         }
     }
@@ -353,11 +378,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     if(!categoryAdapter.getItem(position).equalsIgnoreCase("Select Category")){
                         binding.tilCategory.getEditText().setText(categoryAdapter.getItem(position));
                     }
-                }else if(type.equalsIgnoreCase("Category")){
+                }else if(type.equalsIgnoreCase("Shift")){
                     if(!shiftAdapter.getItem(position).equalsIgnoreCase("Select Shift")){
                         binding.tilShift.getEditText().setText(shiftAdapter.getItem(position));
                     }
-                }else if(type.equalsIgnoreCase("Category")){
+                }else if(type.equalsIgnoreCase("Sector")){
                     if(!sectorAdapter.getItem(position).equalsIgnoreCase("Select Sector")){
                         binding.tilSector.getEditText().setText(sectorAdapter.getItem(position));
                     }
