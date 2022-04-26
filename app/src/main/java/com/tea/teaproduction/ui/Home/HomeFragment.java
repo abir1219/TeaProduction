@@ -402,6 +402,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             Toast.makeText(getActivity(), "Saved Successfully", Toast.LENGTH_SHORT).show();
             empId = "";
             binding.tieEmpCode.setText("");
+            binding.tieEmpName.setText("");
             /*binding.tieCategory.setText("");
             binding.tieShift.setText("");
             binding.tieSector.setText("");*/
