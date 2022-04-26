@@ -100,4 +100,11 @@ public class Urls {
     @Method : POST
      */
     public static final String USER_LIST = BASE_URL + "user_list";
+
+
+    /*
+    @Function : stock_list
+    @Method : POST
+     */
+    public static final String STOCK_LIST = BASE_URL + "stock_list";
 }

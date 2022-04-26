@@ -150,8 +150,8 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
             loadShiftFromServer();
             loadSectorFromServer();
             loadEmployeeDetailsFromServer();
-            loadConsignmentFromLocalToServer();
-            loadStockFromLocalToServer();
+            loadConsignmentFromLocalToServer(); //
+            loadStockFromLocalToServer(); //
             loadCompanyListFromServer();
             loadCategoryListFromServer();
             loadItemListFromServer();
@@ -159,13 +159,68 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
         }
     }
 
+
+    private void loadStockFromServer() {
+        Toast.makeText(this, "loadStock", Toast.LENGTH_SHORT).show();
+        StringRequest sr = new StringRequest(Request.Method.POST, Urls.STOCK_LIST, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("STOCK_LIST_RES", response);
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray array = jsonObject.getJSONArray("result");
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject object = array.getJSONObject(i);
+                        String ItemId = object.getString("ItemId");
+                        String ItemCategoryId = object.getString("ItemCategoryId");
+                        String CompanyId = object.getString("CompanyId");
+                        String SGST = object.getString("SGST");
+                        String CGST = object.getString("CGST");
+                        String IGST = object.getString("IGST");
+                        String PurchaseDate = object.getString("PurchaseDate");
+                        String PurchaseRemark = object.getString("PurchaseRemark");
+                        String InvoiceNumber = object.getString("InvoiceNumber");
+                        String InvoiceDate = object.getString("InvoiceDate");
+                        String UnitPrice = object.getString("UnitPrice");
+                        String CustomPrice1 = object.getString("CustomPrice1");
+                        String CustompriceValue1 = object.getString("CustompriceValue1");
+                        String CustomPrice2 = object.getString("CustomPrice2");
+                        String CustompriceValue2 = object.getString("CustompriceValue2");
+                        String CustomPrice3 = object.getString("CustomPrice3");
+                        String CustompriceValue3 = object.getString("CustompriceValue3");
+                        String StockIn = object.getString("StockIn");
+                        String StockOut = object.getString("StockOut");
+                        String DispatchDate = object.getString("DispatchDate");
+                        String DispatchRemark = object.getString("DispatchRemark");
+                        String Available = object.getString("Available");
+
+                        dbHelper.addStock(ItemId,ItemCategoryId,CompanyId,SGST,CGST,IGST,PurchaseDate,PurchaseRemark,InvoiceNumber,InvoiceDate,
+                                UnitPrice,CustomPrice1,CustompriceValue1,CustomPrice2,CustompriceValue2,CustomPrice3,CustompriceValue3,StockIn,
+                                StockOut,DispatchDate,DispatchRemark,Available);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        Volley.newRequestQueue(SplashScreenActivity.this).add(sr);
+    }
+
     private void insertUser() {
         StringRequest sr = new StringRequest(Request.Method.POST, Urls.USER_LIST, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                dbHelper.deleteUserData();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    Log.e("LOGIN_RES",jsonObject.toString());
+                    Log.e("LOGIN_RES", jsonObject.toString());
                     JSONArray array = jsonObject.getJSONArray("result");
 
                     for (int i = 0; i < array.length(); i++) {
@@ -173,18 +228,24 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                         String userId = object.getString("UserId");
                         String UserName = object.getString("UserName");
 
+                        String Password = (object.getString("ORGPassword"));
+                        Log.d("DECRYPT_PW", Password);
+                        String role = object.getString("RoleDisplayName");
+
+                        dbHelper.insertUser(userId, role, UserName, Password);
+
 
                         //String strResult=decryptMsg(object.getString("Password"),secretKey);
-                        String Password;
-                        try{
-                            Password = decrypt(object.getString("Password"));
-                            Log.d("DECRYPT_PW",Password);
+                        //String Password;
+                        /*try {
+                            String Password = decrypt(object.getString("Password"));
+                            Log.d("DECRYPT_PW", Password);
                             String role = object.getString("RoleDisplayName");
 
-                            dbHelper.insertUser(userId,role,UserName,Password);
-                        }catch (Exception e){
-                            Log.d("DECRYPT_MSG",e.getMessage());
-                        }
+                            dbHelper.insertUser(userId, role, UserName, Password);
+                        } catch (Exception e) {
+                            Log.d("DECRYPT_MSG", e.getMessage());
+                        }*/
 
                     }
                 } catch (JSONException e) {
@@ -205,8 +266,8 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
         String decrypt = "";
         try {
             Cipher c = Cipher.getInstance("AES");
-            c.init(Cipher.DECRYPT_MODE,key);
-            byte[] decodeValue = Base64.decode("",Base64.DEFAULT);
+            c.init(Cipher.DECRYPT_MODE, key);
+            byte[] decodeValue = Base64.decode("", Base64.DEFAULT);
             byte[] decValue = c.doFinal(decodeValue);
             decrypt = new String(decValue);
 
@@ -218,12 +279,12 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
         return decrypt;
     }
 
-    private SecretKey generateKey(String password) throws Exception{
+    private SecretKey generateKey(String password) throws Exception {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] bytes = password.getBytes("UTF-8");
-        digest.update(bytes,0, bytes.length);
+        digest.update(bytes, 0, bytes.length);
         byte[] key = digest.digest();
-        SecretKeySpec secretKeySpec = new SecretKeySpec(key,"AES");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
         return secretKeySpec;
     }
 
@@ -250,13 +311,18 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                 String CustomValue2 = cursor.getString(21);
                 String CustomPrice3 = cursor.getString(22);
                 String CustomValue3 = cursor.getString(23);
+                String StockOut = cursor.getString(14);
+                String DispatchDate = cursor.getString(12);
+                String DispatchRemark = cursor.getString(13);
+                String Available = cursor.getString(24);
 
                 //login(ItemId,ItemCatID,CompanyID);
 
                 StringRequest sr = new StringRequest(Request.Method.POST, Urls.PURCHASE_STOCK, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //dbHelper.deleteStockData();
+                        dbHelper.deleteStockData();
+                        loadStockFromServer();
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -286,11 +352,18 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
                         body.put("custom_value2", CustomValue2);
                         body.put("custom_price3", CustomPrice3);
                         body.put("custom_value3", CustomValue3);
+                        body.put("stock_out", StockOut);
+                        body.put("despatch_date", DispatchDate);
+                        body.put("despatch_remark", DispatchRemark);
+                        body.put("Available", Available);
                         return body;
                     }
                 };
                 Volley.newRequestQueue(SplashScreenActivity.this).add(sr);
             }
+        }
+        else{
+            loadStockFromServer();
         }
     }
 
@@ -301,6 +374,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
         StringRequest sr = new StringRequest(Request.Method.POST, Urls.COMPANY_LIST, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                dbHelper.deleteCompanyData();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     Log.d("COMPANY_RES", response);
@@ -346,6 +420,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
         StringRequest sr = new StringRequest(Request.Method.POST, Urls.ITEM_CATEGORY_LIST, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                dbHelper.deleteItemCategoryData();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     Log.d("Company_RES", response);
@@ -391,6 +466,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
         StringRequest sr = new StringRequest(Request.Method.POST, Urls.ITEM_LIST, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                dbHelper.deleteItemListData();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     Log.d("ITEM_RES", response);
@@ -478,6 +554,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
         StringRequest sr = new StringRequest(Request.Method.POST, Urls.GET_ALL_EMPLOYEE, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                dbHelper.deleteEmployeeData();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     Log.d("EMP_RES", response);
@@ -520,6 +597,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
         StringRequest sr = new StringRequest(Request.Method.POST, Urls.SECTOR, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                dbHelper.deleteSectorData();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     Log.d("Sector_RES", response);
@@ -565,6 +643,7 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
         StringRequest sr = new StringRequest(Request.Method.POST, Urls.SHIFT, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                dbHelper.deleteShiftData();
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     Log.d("Shift_RES", response);
@@ -611,10 +690,12 @@ public class SplashScreenActivity extends AppCompatActivity implements Connectio
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
+                    dbHelper.deleteCategoryData();
                     Log.d("Shift_RES", response);
                     JSONArray jsonArray = jsonObject.getJSONArray("result");
                     List<CategoryModel> categoryModel = new ArrayList<>();
                     for (int i = 0; i < jsonArray.length(); i++) {
+
                         JSONObject object = jsonArray.getJSONObject(i);
                         String GeadeCategoryId = object.getString("GeadeCategoryId");
                         String GeadeCategoryName = object.getString("GeadeCategoryName");

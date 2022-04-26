@@ -275,7 +275,8 @@ public class StockInFragment extends Fragment implements View.OnClickListener {
                 binding.tieCustomValue1.getText().toString(),
                 binding.tieCustomPrice2.getText().toString(), binding.tieCustomValue2.getText().toString(),
                 binding.tieCustomPrice3.getText().toString(),
-                binding.tieCustomValue3.getText().toString(), binding.tieTotalItem.getText().toString()
+                binding.tieCustomValue3.getText().toString(), binding.tieTotalItem.getText().toString(),"0","",
+                "","Yes"
         );
 
         if (isSaved) {

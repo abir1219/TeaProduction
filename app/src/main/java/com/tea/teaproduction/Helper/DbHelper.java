@@ -32,7 +32,7 @@ public class DbHelper extends SQLiteOpenHelper {
                         "(GeadeCategoryId TEXT PRIMARY KEY, GeadeCategoryName TEXT)"
         );
 
-        db.execSQL("create table user "+
+        db.execSQL("create table user " +
                 "(userId text PRIMARY KEY,role text,username text, password text)");
 
         db.execSQL(
@@ -159,18 +159,18 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insertUser(String userId,String role,String username,String password){
+    public boolean insertUser(String userId, String role, String username, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("userId",userId);
-        contentValues.put("role",role);
-        contentValues.put("username",username);
-        contentValues.put("password",password);
+        contentValues.put("userId", userId);
+        contentValues.put("role", role);
+        contentValues.put("username", username);
+        contentValues.put("password", password);
 
         long result = db.insert("user", null, contentValues);
 
         db.close();
-        System.out.println("RESULT: "+result);
+        System.out.println("RESULT: " + result);
         if (result == -1) {
             return false;
         } else {
@@ -179,13 +179,13 @@ public class DbHelper extends SQLiteOpenHelper {
     }
     //userId text PRIMARY KEY,role text,username text, password text
 
-    public Cursor login(String username,String password){
-        System.out.println("Username: "+username+", password: "+password);
+    public Cursor login(String username, String password) {
+        System.out.println("Username: " + username + ", password: " + password);
         SQLiteDatabase db = this.getReadableDatabase();
-        String sql = "select * from user where username = "+"'"+username+"'"+" and password = "+"'"+password+"'";
-        System.out.println("LOGIN_SQL: "+sql);
-        Cursor cursor = db.rawQuery(sql,null);
-        if(cursor.getCount() > 0)
+        String sql = "select * from user where username = " + "'" + username + "'" + " and password = " + "'" + password + "'";
+        System.out.println("LOGIN_SQL: " + sql);
+        Cursor cursor = db.rawQuery(sql, null);
+        if (cursor.getCount() > 0)
             return cursor;
         else
             return null;
@@ -301,20 +301,110 @@ public class DbHelper extends SQLiteOpenHelper {
         );
     }
 
+    public void deleteCategoryData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DROP TABLE category");
+
+        db.execSQL(
+                "create table category " +
+                        "(GeadeCategoryId TEXT PRIMARY KEY, GeadeCategoryName TEXT)"
+        );
+    }
+
+    public void deleteShiftData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DROP TABLE shift");
+
+        db.execSQL(
+                "create table shift " +
+                        "(ShiftId TEXT PRIMARY KEY, ShiftName TEXT)"
+        );
+    }
+
+    public void deleteSectorData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DROP TABLE sector");
+
+        db.execSQL(
+                "create table sector " +
+                        "(SectorId TEXT PRIMARY KEY, SectorName TEXT)"
+        );
+    }
+
+    public void deleteItemListData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DROP TABLE itemList");
+
+        db.execSQL(
+                "create table itemList " +
+                        "(ItemId TEXT PRIMARY KEY,ItemName TEXT)"
+        );
+    }
+
+    public void deleteItemCategoryData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DROP TABLE itemCategory");
+
+        db.execSQL(
+                "create table itemCategory " +
+                        "(ItemCategoryId TEXT PRIMARY KEY,CategoryName TEXT)"
+        );
+    }
+
+    public void deleteUserData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DROP TABLE user");
+
+        db.execSQL("create table user " +
+                "(userId text PRIMARY KEY,role text,username text, password text)"
+        );
+    }
+
+
+    public void deleteCompanyData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DROP TABLE company");
+
+        db.execSQL(
+                "create table company " +
+                        "(CompanyId TEXT PRIMARY KEY,CompanyName TEXT)"
+        );
+    }
+
+    public void deleteEmployeeData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DROP TABLE employee");
+
+        db.execSQL(
+                "create table employee " +
+                        "(EmpId TEXT PRIMARY KEY,EmpCode TEXT, EmpFullName TEXT)"
+        );
+    }
+
+
     public boolean addStock(String ItemId, String ItemCatID, String CompanyID, String SGST, String CGST, String IGST,
                             String PurchaseDate, String REMARK, String InvoiceNo, String InvoiceDate,
                             String UnitPrice, String CustomPrice1, String CustomValue1, String CustomPrice2,
-                            String CustomValue2, String CustomPrice3, String CustomValue3, String StockIn) {
+                            String CustomValue2, String CustomPrice3, String CustomValue3, String StockIn,String StockOut,
+                            String DispatchDate,String DispatchRemark,String Available) {
 
 
         Double rate = Double.parseDouble(UnitPrice) * Double.parseDouble(StockIn);
         Double ItemTotal = 0.0;
-        int totalGST = 0;
+        Double totalGST = 0.0;
         if (IGST.equals("0")) {
-            totalGST = Integer.parseInt(IGST);
+            totalGST = Double.parseDouble(IGST);
             ItemTotal = (rate + (rate * totalGST) / 100);
         } else if (!CGST.equals("0") && !SGST.equals("0")) {
-            totalGST = Integer.parseInt(CGST) + Integer.parseInt(SGST);
+            totalGST = Double.parseDouble(CGST) + Double.parseDouble(SGST);
             Log.d("totalGST: ", "" + totalGST);
             ItemTotal = (rate + (rate * totalGST) / 100);
             Log.d("ItemTotal: ", "" + ItemTotal);
@@ -345,6 +435,10 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put("CustompriceValue3", CustomValue3);
         contentValues.put("ItemRate", String.format("%.2f", rate));
         contentValues.put("ItemTotal", String.format("%.2f", ItemTotal));
+        contentValues.put("StockOut", StockOut);
+        contentValues.put("DispatchDate", DispatchDate);
+        contentValues.put("DispatchRemark", DispatchRemark);
+        contentValues.put("Available", Available);
 
 
         long result = db.insert("stock", null, contentValues);
@@ -369,11 +463,34 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE stock");
 
-        db.execSQL(
-                "create table stock " +
-                        "(ItemId TEXT ,ItemCatID TEXT,CompanyID TEXT,SGST TEXT,CGST TEXT,IGST TEXT,PurchaseDate TEXT," +
-                        "REMARK TEXT,TotalItem TEXT,InvoiceNo TEXT,InvoiceDate TEXT,UnitPrice TEXT,CustomPrice1 TEXT," +
-                        "CustomValue1 TEXT,CustomPrice2 TEXT,CustomValue2 TEXT,CustomPrice3 TEXT,CustomValue3 TEXT)"
+        db.execSQL("CREATE TABLE stock (" +
+                        " StockId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                        " ItemId text DEFAULT NULL," +
+                        " ItemCategoryId text DEFAULT NULL," +
+                        " CompanyId text DEFAULT NULL," +
+                        " ItemRate text DEFAULT NULL," +
+                        " SGST text DEFAULT NULL," +
+                        " CGST text DEFAULT NULL," +
+                        " IGST text DEFAULT NULL," +
+                        " ItemTotal text DEFAULT NULL," +
+                        " PurchaseDate text DEFAULT NULL," +
+                        " PurchaseRemark text," +
+                        " StockIn text DEFAULT 0," +
+                        " DispatchDate text DEFAULT NULL," +
+                        " DispatchRemark text," +
+                        " StockOut text DEFAULT 0," +
+                        " InvoiceNumber text DEFAULT NULL," +
+                        " InvoiceDate text DEFAULT NULL," +
+                        " UnitPrice text DEFAULT NULL," +
+                        " CustomPrice1 text DEFAULT NULL," +
+                        " CustompriceValue1 text DEFAULT NULL," +
+                        " CustomPrice2 text DEFAULT NULL," +
+                        " CustompriceValue2 text DEFAULT NULL," +
+                        " CustomPrice3 text DEFAULT NULL," +
+                        " CustompriceValue3 text DEFAULT NULL," +
+                        " Available CHECK( Available IN ('Yes','No')) DEFAULT 'Yes'," +
+                        " CreatedOn timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                        " ModifiedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP) "
         );
     }
 
@@ -557,7 +674,7 @@ public class DbHelper extends SQLiteOpenHelper {
                         }
                     } else {
                         /*
-                        *//*contentValues.put("StockIn", newStockIn);
+                         *//*contentValues.put("StockIn", newStockIn);
                         contentValues.put("Available", "No");
                         contentValues.put("StockOut", newStockOut);
                         contentValues.put("DispatchDate", despatch_date);
@@ -584,9 +701,9 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
     public Cursor getSingleItemName(String itemId) {
-        System.out.println("ItemID: "+itemId);
+        System.out.println("ItemID: " + itemId);
         SQLiteDatabase database = this.getReadableDatabase();
-        Cursor cursor = database.rawQuery("select * from itemList where ItemId = ?",new String[]{itemId});
+        Cursor cursor = database.rawQuery("select * from itemList where ItemId = ?", new String[]{itemId});
         if (cursor.getCount() > 0) {
             return cursor;
         } else {

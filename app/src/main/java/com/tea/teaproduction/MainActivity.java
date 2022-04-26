@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity{
     private void logout() {
         ManageLoginData.clearLoginData();
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        finish();
     }
 
     public void openDrawer() {
